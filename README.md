@@ -16,10 +16,10 @@ Optimize for Ubuntu 20.04 LTS
 + Installing ligolo proxy and create a ligolo TUN adapter for the tunnel
 + Clone ligolo agent repository
 + Installing docker
-+ Installing ManSpider
++ Installing ManSpider (docker)
 + Installing certipy-ad
 + Installing EnumShare @Bruno
-+ Installing NetExec
++ Installing NetExec (docker)
 + Installing Kerbrute
 + Installing DnsChef
 + Installing ldap-scanner
