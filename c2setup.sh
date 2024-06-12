@@ -111,7 +111,7 @@ fi
 echo -e "${BLUE}Installing golang-go...${NC}"
 
 sudo apt install golang-go -y
-if go --help; then
+if go -h; then
 	echo -e "${GREEN}go installed successfully!${NC}"
  	echo "golang-go" >> /tmp/WHATisINSTALLED.txt
 else
@@ -133,20 +133,6 @@ if nmap --version; then
  	echo "nmap" >> /tmp/WHATisINSTALLED.txt
 else
 	 echo -e "${RED}Failed to install nmap!${NC}"
-fi
-
-
-echo -e "${BLUE}Installing adidnsdump...${NC}"
-
-git clone https://github.com/dirkjanm/adidnsdump
-cd adidnsdump
-pip install .
-if adidnsdump -h; then
-	echo -e "${GREEN}adidnsdump installed successfully!${NC}"
- 	cd ..
-  	echo "adidnsdump" >> /tmp/WHATisINSTALLED.txt
-else
-	 echo -e "${RED}Failed to install adidnsdump!${NC}"
 fi
 
 
@@ -314,6 +300,19 @@ else
 		cd .. 
 		echo -e "${RED}Something went wrong! Impossible to install bloodhound.py.${NC}"
 	fi
+fi
+
+echo -e "${BLUE}Installing adidnsdump...${NC}"
+
+git clone https://github.com/dirkjanm/adidnsdump
+cd adidnsdump
+pip install .
+if adidnsdump -h; then
+	echo -e "${GREEN}adidnsdump installed successfully!${NC}"
+ 	cd ..
+  	echo "adidnsdump" >> /tmp/WHATisINSTALLED.txt
+else
+	 echo -e "${RED}Failed to install adidnsdump!${NC}"
 fi
 
 echo -e "${GREEN}All Done!${NC}"
