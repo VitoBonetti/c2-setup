@@ -23,7 +23,7 @@ echo -e "${BLUE}Updating the system...${NC}"
 if sudo apt update -y; then
 	echo -e "${GREEN}System update successfully!${NC}"
 else
-	 echo -e "${RED}Failed to update the system!${NC}"
+	echo -e "${RED}Failed to update the system!${NC}"
 fi
 
 echo -e "${BLUE}Upgrading the system...${NC}"
@@ -61,13 +61,13 @@ echo -e "${BLUE}Activate environment...${NC}"
 if source env/bin/activate; then
 	echo -e "${GREEN}Done!${NC}"
 	if [ -z "$VIRTUAL_ENV" ]; then
-    	echo -e "${RED}No virtual environment is active.${NC}"
+    		echo -e "${RED}No virtual environment is active.${NC}"
 	else
-	    echo -e "${GREEN}Virtual environment is active: $VIRTUAL_ENV${NC}"
-fi
+		echo -e "${GREEN}Virtual environment is active: $VIRTUAL_ENV${NC}"
+	fi
 else
-	 echo -e "${RED}Failed to activate python virtual environment!Exiting...${NC}"
-	 exit 1
+	echo -e "${RED}Failed to activate python virtual environment!Exiting...${NC}"
+	exit 1
 fi
 
 
@@ -81,9 +81,9 @@ echo -e "${BLUE}Installing net-tools...${NC}"
 
 if sudo apt install net-tools -y; then
 	echo -e "${GREEN}net-tools installed successfully!${NC}"
-	 echo "net-tools" > /tmp/WHATisINSTALLED.txt
+	echo "net-tools" > /tmp/WHATisINSTALLED.txt
 else
-	 echo -e "${RED}Failed to install net-tools!${NC}"
+	echo -e "${RED}Failed to install net-tools!${NC}"
 fi
 
 
@@ -93,7 +93,7 @@ if sudo apt install mlocate -y; then
 	echo -e "${GREEN}mlocate installed successfully!${NC}"
  	echo -e "${BLUE}Installing apache2...${NC}"
 else
-	 echo -e "${RED}Failed to install mlocate!${NC}"
+	echo -e "${RED}Failed to install mlocate!${NC}"
 fi
 echo "mlocate" >> /tmp/WHATisINSTALLED.txt
 
@@ -102,20 +102,21 @@ echo -e "${BLUE}Installing apache2...${NC}"
 sudo apt install apache2 -y
 if sudo systemctl status apache2; then
 	echo -e "${GREEN}apache2 installed successfully!${NC}"
-	 echo "apache2" >> /tmp/WHATisINSTALLED.txt
+	echo "apache2" >> /tmp/WHATisINSTALLED.txt
 else
-	 echo -e "${RED}Failed to install apache2!${NC}"
+	echo -e "${RED}Failed to install apache2!${NC}"
 fi
 
 
-echo -e "${BLUE}Installing golang-go...${NC}"
+echo -e "${BLUE}Installing go...${NC}"
 
-sudo apt install golang-go -y
-if go -h; then
+sudo apt install snapd -y
+sudo snap install go --classic
+if go --version; then
 	echo -e "${GREEN}go installed successfully!${NC}"
- 	echo "golang-go" >> /tmp/WHATisINSTALLED.txt
+ 	echo "go" >> /tmp/WHATisINSTALLED.txt
 else
-	 echo -e "${RED}Failed to install go!${NC}"
+	echo -e "${RED}Failed to install go!${NC}"
 fi
 
 
