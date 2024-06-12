@@ -125,7 +125,7 @@ go install mvdan.cc/garble@master
 echo "mvdan.cc/garble@master" >> /tmp/WHATisINSTALLED.txt
 echo -e "${GREEN}Done!${NC}"
 
-echo -e "${BLUE}Installing wordlist to fattening the file...${NC}"
+echo -e "${BLUE}Installing wordlist to fattening the ligolo agent...${NC}"
 sudo apt install wamerican wbrazilian wportuguese -y
 echo "wamerican wbrazilian wportuguese" >> /tmp/WHATisINSTALLED.txt
 echo -e "${GREEN}Done!${NC}"
