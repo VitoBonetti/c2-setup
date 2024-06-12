@@ -209,8 +209,7 @@ echo -e "${GREEN}Done!${NC}"
 echo "Certipy-Ad" >> /tmp/WHATisINSTALLED.txt
 
 echo -e "${BLUE}Installing EnumShare @Bruno...${NC}"
-mkdir tools 
-cd tools
+
 git clone https://github.com/Brukusec/EnumShare.git
 cd EnumShare
 pip install -r requirements.txt
