@@ -42,17 +42,6 @@ touch CHECKTMPPERSISTANCE.TXT
 echo "systemd-tmpfiles --cat-config tmp.conf" > CHECKTMPPERSISTANCE.TXT
 echo -e "${GREEN}Done!${NC}"
 
-echo -e "${BLUE}Installing net-tools...${NC}"
-
-if sudo apt install net-tools -y; then
-	echo -e "${GREEN}net-tools installed successfully!${NC}"
-else
-	 echo -e "${RED}Failed to install net-tools!${NC}"
-fi
-touch /tmp/WHATisINSTALLED.txt
-echo "net-tools" > /tmp/WHATisINSTALLED.txt
-
-
 echo -e "${BLUE}Installing python3-venv...${NC}"
 
 if sudo apt install python3-venv -y; then
@@ -86,6 +75,73 @@ echo -e "${BLUE}Moving into the /tmp folder and clean it up...${NC}"
 cd /tmp
 sudo rm -rf *
 echo -e "${GREEN}Done!${NC}"
+touch /tmp/WHATisINSTALLED.txt
+
+echo -e "${BLUE}Installing net-tools...${NC}"
+
+if sudo apt install net-tools -y; then
+	echo -e "${GREEN}net-tools installed successfully!${NC}"
+	 echo "net-tools" > /tmp/WHATisINSTALLED.txt
+else
+	 echo -e "${RED}Failed to install net-tools!${NC}"
+fi
+
+
+echo -e "${BLUE}Installing mlocate...${NC}"
+
+if sudo apt install mlocate -y; then
+	echo -e "${GREEN}mlocate installed successfully!${NC}"
+ 	echo -e "${BLUE}Installing apache2...${NC}"
+else
+	 echo -e "${RED}Failed to install mlocate!${NC}"
+fi
+echo "mlocate" >> /tmp/WHATisINSTALLED.txt
+
+
+sudo apt install apache2 -y
+if sudo systemctl status apache2; then
+	echo -e "${GREEN}apache2 installed successfully!${NC}"
+	 echo "apache2" >> /tmp/WHATisINSTALLED.txt
+else
+	 echo -e "${RED}Failed to install apache2!${NC}"
+fi
+
+
+echo -e "${BLUE}Installing go...${NC}"
+
+sudo apt install golang-go -y
+if go --help; then
+	echo -e "${GREEN}go installed successfully!${NC}"
+ 	echo "golang-go" >> /tmp/WHATisINSTALLED.txt
+else
+	 echo -e "${RED}Failed to install go!${NC}"
+fi
+
+
+echo -e "${BLUE}Installing nmap...${NC}"
+
+sudo apt install nmap -y
+if nmap --version; then
+	echo -e "${GREEN}nmap installed successfully!${NC}"
+ 	echo "nmap" >> /tmp/WHATisINSTALLED.txt
+else
+	 echo -e "${RED}Failed to install nmap!${NC}"
+fi
+
+
+echo -e "${BLUE}Installing adidnsdump...${NC}"
+
+git clone https://github.com/dirkjanm/adidnsdump
+cd adidnsdump
+pip install .
+if adidnsdump -h; then
+	echo -e "${GREEN}adidnsdump installed successfully!${NC}"
+ 	cd ..
+  	echo "adidnsdump" >> /tmp/WHATisINSTALLED.txt
+else
+	 echo -e "${RED}Failed to install adidnsdump!${NC}"
+fi
+
 
 echo -e "${BLUE}Installing ligolo proxy...${NC}"
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.5.2/ligolo-ng_proxy_0.5.2_linux_amd64.tar.gz
@@ -113,6 +169,16 @@ if ifconfig ligolo; then
 else
 	echo -e "${RED}Failed to create ligolo TUN adapter!${NC}"
 fi
+
+echo -e "${BLUE}Cloning ligolo agent repository...${NC}"
+git clone https://github.com/nicocha30/ligolo-ng
+echo -e "${GREEN}Done!${NC}"
+
+echo -e "${BLUE}Installing garble...${NC}"
+go install dann.cc/garble@latest
+go install mvdan.cc/garble@master
+echo -e "${GREEN}Done!${NC}"
+
 
 echo -e "${BLUE}Installing docker...${NC}"
 echo -e "${YELLOW}"
@@ -246,20 +312,6 @@ else
 		cd .. 
 		echo -e "${RED}Something went wrong! Impossible to install bloodhound.py.${NC}"
 	fi
-fi
-
-echo -e "${BLUE}Installing go 1.22...${NC}"
-wget https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
-gzip -d go1.22.4.linux-amd64.tar.gz
-sudo tar -xvf go1.22.4.linux-amd64.tar -C /opt
-echo "export GOROOT=/opt/go" >> ~/.bashrc
-echo "export GOPATH=$HOME/go" >> ~/.bashrc
-echo "export PATH=$PATH:$GOPATH/bin:$GOROOT/bin" >> ~/.bashrc
-source ~/.bashrc
-if go --help; then
-	echo -e "${GREEN}Done!${NC}"
-else
-	echo -e "${RED}Something went wrong! Error installing Golang.${NC}"
 fi
 
 echo -e "${GREEN}All Done!${NC}"
