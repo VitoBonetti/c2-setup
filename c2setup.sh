@@ -170,7 +170,7 @@ echo -e "${GREEN}Done!${NC}"
 
 echo -e "${BLUE}Installing docker...${NC}"
 echo -e "${YELLOW}"
-echo "Docker is needed for run tool such as ManSpider!"
+echo "Docker is needed for run tool such as ManSpider and NetExec!"
 echo -e "${NC}"
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt remove $pkg; done
 sudo apt update -y
@@ -222,11 +222,11 @@ echo "EnumShare @Bruno" >> /tmp/WHATisINSTALLED.txt
 echo -e "${BLUE}Installing NetExec...${NC}"
 git clone https://github.com/Pennyw0rth/NetExec
 cd NetExec
-pip install .
-if nxc --help; then
+sudo docker build -t netexec:latest .
+if sudo docker run netexec --version; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
-	echo "NetExec" >> /tmp/WHATisINSTALLED.txt
+	echo "NetExec (sudo docker run netexec --version)" >> /tmp/WHATisINSTALLED.txt
 else 
 	cd ..
 	echo -e "${RED}Something went wrong! Impossible to install NetExec.${NC}"
