@@ -97,6 +97,7 @@ else
 fi
 echo "mlocate" >> /tmp/WHATisINSTALLED.txt
 
+echo -e "${BLUE}Installing apache2...${NC}"
 
 sudo apt install apache2 -y
 if sudo systemctl status apache2; then
@@ -107,7 +108,7 @@ else
 fi
 
 
-echo -e "${BLUE}Installing go...${NC}"
+echo -e "${BLUE}Installing golang-go...${NC}"
 
 sudo apt install golang-go -y
 if go --help; then
@@ -116,6 +117,12 @@ if go --help; then
 else
 	 echo -e "${RED}Failed to install go!${NC}"
 fi
+
+
+echo -e "${BLUE}Installing garble...${NC}"
+go install dann.cc/garble@latest
+go install mvdan.cc/garble@master
+echo -e "${GREEN}Done!${NC}"
 
 
 echo -e "${BLUE}Installing nmap...${NC}"
@@ -172,11 +179,6 @@ fi
 
 echo -e "${BLUE}Cloning ligolo agent repository...${NC}"
 git clone https://github.com/nicocha30/ligolo-ng
-echo -e "${GREEN}Done!${NC}"
-
-echo -e "${BLUE}Installing garble...${NC}"
-go install dann.cc/garble@latest
-go install mvdan.cc/garble@master
 echo -e "${GREEN}Done!${NC}"
 
 
