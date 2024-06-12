@@ -252,9 +252,9 @@ echo -e "${BLUE}Installing go 1.22...${NC}"
 wget https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
 gzip -d go1.22.4.linux-amd64.tar.gz
 sudo tar -xvf go1.22.4.linux-amd64.tar -C /opt
-echo "GOROOT=/opt/go" >> ~/.bashrc
-echo "GOPATH=$HOME/go" >> ~/.bashrc
-echo "PATH=$PATH:$GOPATH/bin:$GOROOT/bin" >> ~/.bashrc
+echo "export GOROOT=/opt/go" >> ~/.bashrc
+echo "export GOPATH=$HOME/go" >> ~/.bashrc
+echo "export PATH=$PATH:$GOPATH/bin:$GOROOT/bin" >> ~/.bashrc
 source ~/.bashrc
 if go --help; then
 	echo -e "${GREEN}Done!${NC}"
