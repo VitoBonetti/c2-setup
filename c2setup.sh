@@ -112,7 +112,7 @@ echo -e "${BLUE}Installing go...${NC}"
 
 sudo apt install snapd -y
 sudo snap install go --classic
-if go --version; then
+if go version; then
 	echo -e "${GREEN}go installed successfully!${NC}"
  	echo "go" >> /tmp/WHATisINSTALLED.txt
 else
@@ -121,7 +121,6 @@ fi
 
 
 echo -e "${BLUE}Installing garble...${NC}"
-go install dann.cc/garble@latest
 go install mvdan.cc/garble@master
 echo -e "${GREEN}Done!${NC}"
 
