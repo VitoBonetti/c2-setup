@@ -42,6 +42,12 @@ touch CHECKTMPPERSISTANCE.TXT
 echo "systemd-tmpfiles --cat-config tmp.conf" > CHECKTMPPERSISTANCE.TXT
 echo -e "${GREEN}Done!${NC}"
 
+echo -e "${BLUE}Moving into the /tmp folder and clean it up...${NC}"
+cd /tmp
+sudo rm -rf *
+echo -e "${GREEN}Done!${NC}"
+touch /tmp/WHATisINSTALLED.txt
+
 echo -e "${BLUE}Installing python3-venv...${NC}"
 
 if sudo apt install python3-venv -y > /dev/null 2>&1; then
@@ -70,13 +76,6 @@ else
 	exit 1
 fi
 
-
-echo -e "${BLUE}Moving into the /tmp folder and clean it up...${NC}"
-cd /tmp
-sudo rm -rf *
-echo -e "${GREEN}Done!${NC}"
-touch /tmp/WHATisINSTALLED.txt
-
 echo -e "${BLUE}Installing net-tools...${NC}"
 
 if sudo apt install net-tools -y > /dev/null 2>&1; then
@@ -99,7 +98,7 @@ echo "mlocate" >> /tmp/WHATisINSTALLED.txt
 
 echo -e "${BLUE}Installing apache2...${NC}"
 
-sudo apt install apache2 -y
+sudo apt install apache2 -y > /dev/null 2>&1
 if sudo systemctl status apache2; then
 	echo -e "${GREEN}apache2 installed successfully!${NC}"
 	echo "apache2" >> /tmp/WHATisINSTALLED.txt
@@ -142,7 +141,7 @@ fi
 
 
 echo -e "${BLUE}Installing ligolo proxy...${NC}"
-wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.5.2/ligolo-ng_proxy_0.5.2_linux_amd64.tar.gz
+wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.5.2/ligolo-ng_proxy_0.5.2_linux_amd64.tar.gz > /dev/null 2>&1
 gzip -d ligolo-ng_proxy_0.5.2_linux_amd64.tar.gz
 tar -xvf ligolo-ng_proxy_0.5.2_linux_amd64.tar
 mkdir ligolo-proxy
@@ -169,7 +168,7 @@ else
 fi
 
 echo -e "${BLUE}Cloning ligolo agent repository...${NC}"
-git clone https://github.com/nicocha30/ligolo-ng
+git clone https://github.com/nicocha30/ligolo-ng  > /dev/null 2>&1
 echo -e "${GREEN}Done!${NC}"
 
 
@@ -177,11 +176,11 @@ echo -e "${BLUE}Installing docker...${NC}"
 echo -e "${YELLOW}"
 echo "Docker is needed for run tool such as ManSpider and NetExec!"
 echo -e "${NC}"
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt remove $pkg; done
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt remove $pkg > /dev/null 2>&1; done
 sudo apt update -y > /dev/null 2>&1
 sudo apt install ca-certificates curl -y > /dev/null 2>&1
 sudo install -m 0755 -d /etc/apt/keyrings > /dev/null 2>&1
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc  > /dev/null 2>&1
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
@@ -215,7 +214,7 @@ echo "Certipy-Ad" >> /tmp/WHATisINSTALLED.txt
 
 echo -e "${BLUE}Installing EnumShare @Bruno...${NC}"
 
-git clone https://github.com/Brukusec/EnumShare.git
+git clone https://github.com/Brukusec/EnumShare.git > /dev/null 2>&1 
 cd EnumShare
 pip install -r requirements.txt > /dev/null 2>&1
 touch ENUMSHARE.TXT
@@ -225,7 +224,7 @@ echo -e "${GREEN}Done!${NC}"
 echo "EnumShare @Bruno" >> /tmp/WHATisINSTALLED.txt
 
 echo -e "${BLUE}Installing NetExec...${NC}"
-git clone https://github.com/Pennyw0rth/NetExec
+git clone https://github.com/Pennyw0rth/NetExec > /dev/null 2>&1
 cd NetExec
 sudo docker build -t netexec:latest . > /dev/null 2>&1
 if sudo docker run netexec --version; then
@@ -239,14 +238,14 @@ fi
 
 echo -e "${BLUE}Installing Kerbrute...${NC}"
 pip install kerbrute > /dev/null 2>&1
-if kerbrute --help; then
+if kerbrute --version; then
 	echo -e "${GREEN}Done!${NC}"
 	echo "Kerbrute" >> /tmp/WHATisINSTALLED.txt
 else 
 	git clone https://github.com/TarlogicSecurity/kerbrute > /dev/null 2>&1
 	cd kerbrute
 	pip install -r requirements.txt > /dev/null 2>&1
-	if kerbrute --help; then
+	if kerbrute --version; then
 		cd ..
 		echo -e "${GREEN}Done!${NC}"
 	else
@@ -259,7 +258,7 @@ echo -e "${BLUE}Installing DnsChef...${NC}"
 git clone https://github.com/iphelix/dnschef.git > /dev/null 2>&1
 cd dnschef
 pip install -r requirements.txt > /dev/null 2>&1
-if python3 dnschef.py -h; then
+if python3 dnschef.py --version; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
 	echo "DnsChef" >> /tmp/WHATisINSTALLED.txt
