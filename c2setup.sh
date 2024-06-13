@@ -20,7 +20,7 @@ echo -e "${NC}"
 
 echo -e "${BLUE}Updating the system...${NC}"
 
-if sudo apt update -y; then
+if sudo apt update -y > /dev/null 2>&1; then
 	echo -e "${GREEN}System update successfully!${NC}"
 else
 	echo -e "${RED}Failed to update the system!${NC}"
@@ -28,7 +28,7 @@ fi
 
 echo -e "${BLUE}Upgrading the system...${NC}"
 
-if sudo apt upgrade -y; then
+if sudo apt upgrade -y > /dev/null 2>&1; then
 	echo -e "${GREEN}System upgraded successfully!${NC}"
 else
 	echo -e "${RED}Failed to upgrade the system!${NC}"
@@ -44,7 +44,7 @@ echo -e "${GREEN}Done!${NC}"
 
 echo -e "${BLUE}Installing python3-venv...${NC}"
 
-if sudo apt install python3-venv -y; then
+if sudo apt install python3-venv -y > /dev/null 2>&1; then
 	echo -e "${GREEN}python3-venv installed successfully!${NC}"
 	echo -e "${BLUE}Creating python virtual environment env...${NC}"
 	if python3 -m venv env; then
@@ -79,7 +79,7 @@ touch /tmp/WHATisINSTALLED.txt
 
 echo -e "${BLUE}Installing net-tools...${NC}"
 
-if sudo apt install net-tools -y; then
+if sudo apt install net-tools -y > /dev/null 2>&1; then
 	echo -e "${GREEN}net-tools installed successfully!${NC}"
 	echo "net-tools" > /tmp/WHATisINSTALLED.txt
 else
@@ -89,7 +89,7 @@ fi
 
 echo -e "${BLUE}Installing mlocate...${NC}"
 
-if sudo apt install mlocate -y; then
+if sudo apt install mlocate -y > /dev/null 2>&1; then
 	echo -e "${GREEN}mlocate installed successfully!${NC}"
  	echo -e "${BLUE}Installing apache2...${NC}"
 else
@@ -110,8 +110,8 @@ fi
 
 echo -e "${BLUE}Installing go...${NC}"
 
-sudo apt install snapd -y
-sudo snap install go --classic
+sudo apt install snapd -y > /dev/null 2>&1
+sudo snap install go --classic > /dev/null 2>&1
 if go version; then
 	echo -e "${GREEN}go installed successfully!${NC}"
  	echo "go" >> /tmp/WHATisINSTALLED.txt
@@ -121,18 +121,18 @@ fi
 
 
 echo -e "${BLUE}Installing garble...${NC}"
-go install mvdan.cc/garble@master
+go install mvdan.cc/garble@master > /dev/null 2>&1
 echo "mvdan.cc/garble@master" >> /tmp/WHATisINSTALLED.txt
 echo -e "${GREEN}Done!${NC}"
 
 echo -e "${BLUE}Installing wordlist to fattening the ligolo agent...${NC}"
-sudo apt install wamerican wbrazilian wportuguese -y
+sudo apt install wamerican wbrazilian wportuguese -y > /dev/null 2>&1
 echo "wamerican wbrazilian wportuguese" >> /tmp/WHATisINSTALLED.txt
 echo -e "${GREEN}Done!${NC}"
 
 echo -e "${BLUE}Installing nmap...${NC}"
 
-sudo apt install nmap -y
+sudo apt install nmap -y > /dev/null 2>&1
 if nmap --version; then
 	echo -e "${GREEN}nmap installed successfully!${NC}"
  	echo "nmap" >> /tmp/WHATisINSTALLED.txt
@@ -178,17 +178,17 @@ echo -e "${YELLOW}"
 echo "Docker is needed for run tool such as ManSpider and NetExec!"
 echo -e "${NC}"
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt remove $pkg; done
-sudo apt update -y
-sudo apt install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
+sudo apt update -y > /dev/null 2>&1
+sudo apt install ca-certificates curl -y > /dev/null 2>&1
+sudo install -m 0755 -d /etc/apt/keyrings > /dev/null 2>&1
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update -y
-sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt update -y > /dev/null 2>&1
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y > /dev/null 2>&1
 if sudo docker run hello-world; then
 	echo -e "${GREEN}Done!${NC}"
 	echo "Docker" >> /tmp/WHATisINSTALLED.txt
@@ -197,7 +197,7 @@ else
 	exit 1
 fi
 echo -e "${BLUE}Installing ManSpider...${NC}"
-sudo docker pull blacklanternsecurity/manspider
+sudo docker pull blacklanternsecurity/manspider > /dev/null 2>&1
 if sudo docker run blacklanternsecurity/manspider --help; then
 	echo -e "${GREEN}Done!${NC}"
 	echo "ManSpider" >> /tmp/WHATisINSTALLED.txt
@@ -207,9 +207,9 @@ else
 	echo -e "${RED}Something went wrong! Impossible to install ManSpider.${NC}"
 fi
 echo -e "${BLUE}Installing certipy-ad...${NC}"
-pip install wheel
-pip install lxml==4.9.3
-pip install certipy-ad
+pip install wheel > /dev/null 2>&1
+pip install lxml==4.9.3 > /dev/null 2>&1
+pip install certipy-ad > /dev/null 2>&1
 echo -e "${GREEN}Done!${NC}"
 echo "Certipy-Ad" >> /tmp/WHATisINSTALLED.txt
 
@@ -217,7 +217,7 @@ echo -e "${BLUE}Installing EnumShare @Bruno...${NC}"
 
 git clone https://github.com/Brukusec/EnumShare.git
 cd EnumShare
-pip install -r requirements.txt
+pip install -r requirements.txt > /dev/null 2>&1
 touch ENUMSHARE.TXT
 echo "https://github.com/Brukusec/EnumShare" > ENUMSHARE.TXT
 cd ..
@@ -227,7 +227,7 @@ echo "EnumShare @Bruno" >> /tmp/WHATisINSTALLED.txt
 echo -e "${BLUE}Installing NetExec...${NC}"
 git clone https://github.com/Pennyw0rth/NetExec
 cd NetExec
-sudo docker build -t netexec:latest .
+sudo docker build -t netexec:latest . > /dev/null 2>&1
 if sudo docker run netexec --version; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
@@ -238,14 +238,14 @@ else
 fi
 
 echo -e "${BLUE}Installing Kerbrute...${NC}"
-pip install kerbrute
+pip install kerbrute > /dev/null 2>&1
 if kerbrute --help; then
 	echo -e "${GREEN}Done!${NC}"
 	echo "Kerbrute" >> /tmp/WHATisINSTALLED.txt
 else 
-	git clone https://github.com/TarlogicSecurity/kerbrute
+	git clone https://github.com/TarlogicSecurity/kerbrute > /dev/null 2>&1
 	cd kerbrute
-	pip install -r requirements.txt
+	pip install -r requirements.txt > /dev/null 2>&1
 	if kerbrute --help; then
 		cd ..
 		echo -e "${GREEN}Done!${NC}"
@@ -256,9 +256,9 @@ else
 fi
 
 echo -e "${BLUE}Installing DnsChef...${NC}"
-git clone https://github.com/iphelix/dnschef.git
+git clone https://github.com/iphelix/dnschef.git > /dev/null 2>&1
 cd dnschef
-pip install -r requirements.txt
+pip install -r requirements.txt > /dev/null 2>&1
 if python3 dnschef.py -h; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
@@ -269,9 +269,9 @@ else
 fi
 
 echo -e "${BLUE}Installing ldap-scanner...${NC}"
-git clone https://github.com/GoSecure/ldap-scanner.git
+git clone https://github.com/GoSecure/ldap-scanner.git > /dev/null 2>&1
 cd ldap-scanner
-pip install impacket
+pip install impacket > /dev/null 2>&1
 if python3 ldap-scanner.py -h; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
@@ -282,16 +282,16 @@ else
 fi
 
 echo -e "${BLUE}Installing bloodhound.py...${NC}"
-pip install bloodhound
+pip install bloodhound > /dev/null 2>&1
 if bloodhound-python --help; then
 	echo -e "${GREEN}Done!${NC}"
 	echo "bloodhound.py (bloodhound-python --help)" >> /tmp/WHATisINSTALLED.txt
 	touch BLOODHOUND.TXT
 	echo "bloodhound-python --help" > BLOODHOUND.TXT
 else
-	git clone https://github.com/dirkjanm/BloodHound.py.git
+	git clone https://github.com/dirkjanm/BloodHound.py.git > /dev/null 2>&1
 	cd BloodHound.py
-	pip install .
+	pip install . > /dev/null 2>&1
 	if python3 bloodhound --help; then
 		cd ..
 		echo -e "${GREEN}Done!${NC}"
@@ -308,9 +308,9 @@ fi
 
 echo -e "${BLUE}Installing adidnsdump...${NC}"
 
-git clone https://github.com/dirkjanm/adidnsdump
+git clone https://github.com/dirkjanm/adidnsdump > /dev/null 2>&1
 cd adidnsdump
-pip install .
+pip install . > /dev/null 2>&1
 if adidnsdump -h; then
 	echo -e "${GREEN}adidnsdump installed successfully!${NC}"
  	cd ..
