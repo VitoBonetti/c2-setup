@@ -141,9 +141,9 @@ fi
 
 
 echo -e "${BLUE}Installing ligolo proxy...${NC}"
-git clone https://github.com/0x00-0x00/ligolo-ng
+git clone https://github.com/0x00-0x00/ligolo-ng > /dev/null 2>&1
 cd ligolo-ng
-go build -o proxy cmd/proxy/main.go
+go build -o proxy cmd/proxy/main.go > /dev/null 2>&1
 cd ..
 echo -e "${GREEN}Done!${NC}"
 echo "Ligolo Proxy " >> /tmp/WHATisINSTALLED.txt
