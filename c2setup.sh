@@ -1,5 +1,7 @@
 #!/bin/bash
 
+start_time=$(date +%s)
+
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 ORANGE='\033[0;33m'
@@ -315,6 +317,10 @@ else
 	 echo -e "${RED}Failed to install adidnsdump!${NC}"
 fi
 
+end_time=$(date +%s)
+execution_time=$((end_time - start_time))
+
+echo "Execution time: $execution_time seconds"
 echo -e "${GREEN}All Done!${NC}"
 echo -e "${ORANGE}"
 echo "  ____               ____              "
