@@ -141,13 +141,10 @@ fi
 
 
 echo -e "${BLUE}Installing ligolo proxy...${NC}"
-wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.5.2/ligolo-ng_proxy_0.5.2_linux_amd64.tar.gz > /dev/null 2>&1
-gzip -d ligolo-ng_proxy_0.5.2_linux_amd64.tar.gz
-tar -xvf ligolo-ng_proxy_0.5.2_linux_amd64.tar
-mkdir ligolo-proxy
-mv LICENSE ligolo-proxy
-mv proxy ligolo-proxy
-mv README.md ligolo-proxy
+git clone https://github.com/0x00-0x00/ligolo-ng
+cd ligolo-ng
+go build -o proxy cmd/proxy/main.go
+cd ..
 echo -e "${GREEN}Done!${NC}"
 echo "Ligolo Proxy " >> /tmp/WHATisINSTALLED.txt
 
@@ -238,7 +235,7 @@ fi
 
 echo -e "${BLUE}Installing Kerbrute...${NC}"
 pip install kerbrute > /dev/null 2>&1
-if kerbrute --version; then
+if kerbrute -h; then
 	echo -e "${GREEN}Done!${NC}"
 	echo "Kerbrute" >> /tmp/WHATisINSTALLED.txt
 else 
@@ -258,7 +255,7 @@ echo -e "${BLUE}Installing DnsChef...${NC}"
 git clone https://github.com/iphelix/dnschef.git > /dev/null 2>&1
 cd dnschef
 pip install -r requirements.txt > /dev/null 2>&1
-if python3 dnschef.py --version; then
+if python3 dnschef.py -h; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
 	echo "DnsChef" >> /tmp/WHATisINSTALLED.txt
