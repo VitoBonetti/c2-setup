@@ -226,10 +226,10 @@ echo -e "${BLUE}Installing NetExec...${NC}"
 git clone https://github.com/Pennyw0rth/NetExec > /dev/null 2>&1
 cd NetExec
 sudo docker build -t netexec:latest . > /dev/null 2>&1
-if sudo docker run netexec --version; then
+if sudo docker run netexec --help; then
 	cd ..
 	echo -e "${GREEN}Done!${NC}"
-	echo "NetExec (sudo docker run netexec --version)" >> /tmp/WHATisINSTALLED.txt
+	echo "NetExec (sudo docker run netexec --help)" >> /tmp/WHATisINSTALLED.txt
 else 
 	cd ..
 	echo -e "${RED}Something went wrong! Impossible to install NetExec.${NC}"
