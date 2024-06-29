@@ -1,7 +1,3 @@
-
-##### Tested
-
-```
 #!/bin/bash
 
 G='\033[0;32m'
@@ -904,4 +900,3 @@ echo -e "${0}"
 echo "[+] Done"
 echo "[+] Execution time: $execution_time seconds"
 echo -e "${N}"
-```
