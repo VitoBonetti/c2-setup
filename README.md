@@ -1,8 +1,10 @@
 # C2 Setup for Adversary Simulation Test
 
-Optimize for Ubuntu 20.04 LTS
+## gpcc2setup.sh 
 
-## What it does
+Optimize for Ubuntu 20.04 LTS on Google Cloud Platform
+
+### What it does
 
 + Update and Upgrade the system
 + Create persistance for the /tmp folder in case of accidental reboot
