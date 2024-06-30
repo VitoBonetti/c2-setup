@@ -116,7 +116,7 @@ if sudo python3 -m venv python-venv; then
 	else
 		echo -e "${G}[+] Virtual environment is active: $VIRTUAL_ENV${N}"
 	fi
-	EOF
+EOF
 else
 	echo -e "${R}"
 	echo "[-] Failed to activate High Privilages Python virtual environment!"
@@ -170,7 +170,7 @@ sudo git clone https://github.com/0x00-0x00/ligolo-ng
 cd ligolo-ng
 sudo go build -o proxy cmd/proxy/main.go
 cd
-sudo ln -s /opt/ligolo-ng /usr/local/bin/lg-proxy
+sudo ln -s /opt/ligolo-ng/proxy /usr/local/bin/lg-proxy
 if lg-proxy -h; then
 	echo -e "${G}[+] ligolo proxy installed successfully!${N}"
 else
@@ -290,7 +290,7 @@ fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo -i bash<< 'EOF'
+	sudo -i bash << 'EOF'
 	source /opt/python-ven/bin/activate
 	cd /opt
 	git clone https://github.com/iphelix/dnschef.git
@@ -314,9 +314,9 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install dnschef!${N}"
 		echo "[>] Continuing..."
 	fi
-	EOF	
+EOF	
 else
-	sudo -i bash<<EOF
+	sudo -i bash  << 'EOF'
 	cd /opt
 	git clone https://github.com/iphelix/dnschef.git
 	cd dnschef
@@ -339,7 +339,7 @@ else
 		echo -e "${R}[-] Failed to install dnschef!${N}"
 		echo "[>] Continuing..."
 	fi
-	EOF	
+EOF	
 fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
@@ -369,7 +369,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
 		echo "[>] Continuing..."
 	fi
-	EOF	
+EOF	
 else
 	sudo -i bash << 'EOF'
 	cd /opt
@@ -395,7 +395,7 @@ else
 		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
 		echo "[>] Continuing..."
 	fi	
-	EOF
+EOF
 fi
 
 echo -e "${B}[*] Installing bloodhound...${N}"
@@ -443,7 +443,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
 	fi
-	EOF	
+EOF	
 else
 	sudo -i bash << 'EOF'
 	cd /opt
@@ -467,7 +467,7 @@ else
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
 	fi	
-	EOF
+EOF
 fi
 
 echo -e "${B}[*] Installing nmap ...${N}"
@@ -508,7 +508,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
 	fi
-	EOF	
+EOF	
 else
 	sudo -i bash << 'EOF'
 	cd /opt
@@ -536,7 +536,7 @@ else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
 	fi	
-	EOF
+EOF
 fi
 
 echo -e "${B}[*] Installing gmapsapiscanner ...${N}"
