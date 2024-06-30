@@ -185,7 +185,8 @@ fi
 echo -e "${B}[*] Create ligolo TUN adapter for the tunnel...${N}"
 current_user=$USER
 sudo ip tuntap add user "$current_user" mode tun ligolo
-sudo ip link set ligolo upif ifconfig ligolo; then
+sudo ip link set ligolo up
+if ifconfig ligolo; then
 	echo -e "${G}[+] ligolo TUN adapter created successfully!${N}"
 	echo -e "${O}"
 	echo "You need to add a new route to the ligolo TUN adapter."
