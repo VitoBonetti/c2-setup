@@ -557,7 +557,7 @@ echo -e "${B}[*] Installing gmapsapiscanner ...${N}"
 cd /opt
 sudo git clone https://github.com/ozguralp/gmapsapiscanner.git
 cd gmapsapiscanner
-if python3 maps_api_scanner.py; then
+if python3 maps_api_scanner.py -h; then
 	echo -e "${G}[+] gmapsapiscanner installed successfully!${N}"
 	echo -e "${B}[*] Creating gmapsapiscanner wrapper...${N}"
 	cd
