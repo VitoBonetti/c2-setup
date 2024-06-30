@@ -272,7 +272,7 @@ if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
 	source /tmp/python-ven/bin/activate
 	pip install kerbrute
 	pip install --upgrade setuptools
-	if kerbrute; then
+	if kerbrute --help; then
 		echo -e "${G}[+] kerbrute installed successfully!${N}"
 	else
 		echo -e "${R}[-] Failed to install kerbrute!${N}"
