@@ -15,14 +15,14 @@ echo "[*] Starting the process..."
 echo -e "${N}"
 
 echo -e "${B}[*] Updating the system...${N}"
-if sudo apt update -y > /dev/null 2>&1; then
+if sudo apt update -y; then
 	echo -e "${G}[+] System update successfully!${N}"
 else
 	echo -e "$[-] {R}Failed to update the system!${N}"
 fi
 
 echo -e "${B}[*] Upgrading the system...${N}"
-if sudo apt upgrade -y > /dev/null 2>&1; then
+if sudo apt upgrade -y; then
 	echo -e "${G}[+] System upgraded successfully!${N}"
 else
 	echo -e "$[-] {R}Failed to upgrade the system!${N}"
@@ -35,7 +35,7 @@ echo "d /tmp 1777 root root -" | sudo tee -a /etc/tmpfiles.d/tmp.conf
 echo -e "$[+] {G}Done!${N}"
 
 echo -e "${B}[*] Installing Python virtual environment...${N}"
-if sudo apt install python3-venv -y > /dev/null 2>&1; then
+if sudo apt install python3-venv -y; then
 	echo -e "${G}[+] python3-venv installed successfully!${N}"
 else
 	 echo -e "$[-] {R}Failed to install python3-venv!${N}"
@@ -101,8 +101,8 @@ fi
 cd
 
 echo -e "${B}[*] Installing net-tools...${N}"
-if sudo apt install net-tools -y > /dev/null 2>&1; then
-	if ifconfig > /dev/null 2>&1; then
+if sudo apt install net-tools -y; then
+	if ifconfig; then
 		echo -e "${G}[+] net-tools installed successfully!${N}"
 	else
 		echo -e "${R}[-] Failed to install net-tools!${N}"
@@ -115,8 +115,8 @@ fi
 
 
 echo -e "${B}[*] Installing git...${N}"
-if sudo apt install git -y > /dev/null 2>&1; then
-	if git > /dev/null 2>&1; then
+if sudo apt install git -y; then
+	if git; then
 		echo -e "${G}[+] git installed successfully!${N}"
 	else
 		echo -e "${R}[-] Failed to install git!${N}"
@@ -129,7 +129,7 @@ fi
 
 
 echo -e "${B}[*] Installing plocate...${N}"
-if sudo apt install plocate -y > /dev/null 2>&1; then
+if sudo apt install plocate -y; then
 	if locate -h > /dev/null 2>&1; then
 		echo -e "${G}[+] plocate installed successfully!${N}"
 	else
@@ -142,7 +142,7 @@ else
 fi
 
 echo -e "${B}[*] Installing apache2...${N}"
-if sudo apt install apache2 -y > /dev/null 2>&1; then
+if sudo apt install apache2 -y; then
 	echo -e "${G}[+] apache2 installed successfully!${N}"
 	sudo systemctl start apache2
 	if sudo systemctl is-active --quiet apache2; then
@@ -171,7 +171,7 @@ else
 fi
 
 echo -e "${B}[*] Installing garble...${N}"
-if go install mvdan.cc/garble@master > /dev/null 2>&1; then
+if go install mvdan.cc/garble@master; then
 	echo -e "${G}[+] garble installed successfully!${N}"
 else
 	echo -e "${R}[-] Failed to install garble!${N}"
@@ -181,13 +181,13 @@ fi
 echo -e "${B}[*] Installing ligolo proxy...${N}"
 cd /opt
 sudo su
-git clone https://github.com/0x00-0x00/ligolo-ng > /dev/null 2>&1
+git clone https://github.com/0x00-0x00/ligolo-ng
 cd ligolo-ng
-go build -o proxy cmd/proxy/main.go > /dev/null 2>&1
+go build -o proxy cmd/proxy/main.go
 exit
 cd
 sudo ln -s /opt/ligolo-ng /usr/local/bin/lg-proxy
-if lg-proxy -h > /dev/null 2>&1; then
+if lg-proxy -h; then
 	echo -e "${G}[+] ligolo proxy installed successfully!${N}"
 else
 	echo -e "${R}"
@@ -220,7 +220,7 @@ fi
 echo -e "${B}[*] Cloning ligolo agent...${N}"
 cd /opt
 sudo su
-if git clone https://github.com/nicocha30/ligolo-ng ligolo-agent > /dev/null 2>&1; then
+if git clone https://github.com/nicocha30/ligolo-ng ligolo-agent; then
 	echo -e "${G}[+] ligolo agent cloned successfully!${N}"
 else
 	echo -e "${R}[-] Failed to cloned ligolo agent!${N}"
