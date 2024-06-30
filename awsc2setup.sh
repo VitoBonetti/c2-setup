@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Declearing the colors
+# Declaring the colors
 G='\033[0;32m'
 B='\033[0;34m'
 O='\033[0;33m'
@@ -51,7 +51,7 @@ echo -e "${B}[*] Updating the system...${N}"
 if sudo apt update -y; then
 	echo -e "${G}[+] System update successfully!${N}"
 else
-	echo -e "$[-] {R}Failed to update the system!${N}"
+	echo -e "${R}[-] Failed to update the system!${N}"
 fi
 
 echo -e "${B}[*] Upgrading the system...${N}"
@@ -63,11 +63,11 @@ fi
 
 # Create persistence on the /tmp folder
 
-echo -e "${B}[*] Make the /tmp folder persistance...${N}"
+echo -e "${B}[*] Make the /tmp folder persistence...${N}"
 sudo touch /etc/tmpfiles.d/tmp.conf
 echo "# Disable automatic cleanup of /tmp" | sudo tee /etc/tmpfiles.d/tmp.conf
 echo "d /tmp 1777 root root -" | sudo tee -a /etc/tmpfiles.d/tmp.conf
-echo -e "$[+] {G}Done!${N}"
+echo -e "${G}[+] Done!${N}"
 
 # Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
@@ -109,7 +109,7 @@ cd /opt
 if sudo python3 -m venv python-venv; then
 	sleep 5
 	echo -e "${G}[+] High Privilages Python virtual environment created successfully!${N}"
-	sudo -i bash<<EOF
+	sudo -i bash<< 'EOF'
 	source /opt/python-venv/bin/activate
 	if [ -z "$VIRTUAL_ENV" ]; then
 		echo -e "${R}[-] No virtual environment is active.${N}"
@@ -290,7 +290,7 @@ fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo -i bash<<EOF
+	sudo -i bash<< 'EOF'
 	source /opt/python-ven/bin/activate
 	cd /opt
 	git clone https://github.com/iphelix/dnschef.git
@@ -344,7 +344,7 @@ fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo -i bash<<EOF
+	sudo -i bash<< 'EOF'
 	source /opt/python-ven/bin/activate
 	cd /opt
 	git clone https://github.com/GoSecure/ldap-scanner.git 
@@ -371,7 +371,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	fi
 	EOF	
 else
-	sudo -i bash<<EOF
+	sudo -i bash << 'EOF'
 	cd /opt
 	git clone https://github.com/GoSecure/ldap-scanner.git 
 	cd ldap-scanner
@@ -420,7 +420,7 @@ fi
 
 echo -e "${B}[*] Installing adidnsdump ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo -i bash<<EOF
+	sudo -i bash << 'EOF'
 	cd /opt
 	source python-env/bin/activate
 	git clone https://github.com/dirkjanm/adidnsdump 
@@ -445,7 +445,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	fi
 	EOF	
 else
-	sudo -i bash<<EOF
+	sudo -i bash << 'EOF'
 	cd /opt
 	git clone https://github.com/dirkjanm/adidnsdump 
 	cd adidnsdump
@@ -481,7 +481,7 @@ fi
 
 echo -e "${B}[*] Installing ADenum ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo -i bash<<EOF
+	sudo -i bash << 'EOF'
 	cd /opt
 	source python-env/bin/activate 
 	git clone https://github.com/pelletierr/ADenum/
@@ -510,7 +510,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	fi
 	EOF	
 else
-	sudo -i bash<<EOF
+	sudo -i bash << 'EOF'
 	cd /opt
 	git clone https://github.com/pelletierr/ADenum/
 	cd ADenum
