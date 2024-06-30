@@ -6,6 +6,7 @@ O='\033[0;33m'
 Y='\033[1;33m'
 R='\033[0;31m'
 N='\033[0m'
+P="\e[35m"  
 
 start_time=$(date +%s)
 
@@ -180,11 +181,9 @@ fi
 
 echo -e "${B}[*] Installing ligolo proxy...${N}"
 cd /opt
-sudo su
-git clone https://github.com/0x00-0x00/ligolo-ng
+sudo git clone https://github.com/0x00-0x00/ligolo-ng
 cd ligolo-ng
-go build -o proxy cmd/proxy/main.go
-exit
+sudo go build -o proxy cmd/proxy/main.go
 cd
 sudo ln -s /opt/ligolo-ng /usr/local/bin/lg-proxy
 if lg-proxy -h; then
@@ -219,8 +218,7 @@ fi
 
 echo -e "${B}[*] Cloning ligolo agent...${N}"
 cd /opt
-sudo su
-if git clone https://github.com/nicocha30/ligolo-ng ligolo-agent; then
+if sudo git clone https://github.com/nicocha30/ligolo-ng ligolo-agent; then
 	echo -e "${G}[+] ligolo agent cloned successfully!${N}"
 else
 	echo -e "${R}[-] Failed to cloned ligolo agent!${N}"
@@ -272,8 +270,7 @@ echo -e "${G}[+] certipy-ad installed successfully!${N}"
 
 echo -e "${B}[*] Installing NetExec...${N}"
 cd /opt
-sudo su
-git clone https://github.com/Pennyw0rth/NetExec 
+sudo git clone https://github.com/Pennyw0rth/NetExec 
 cd NetExec
 sudo docker build -t netexec:latest . 
 if sudo docker run netexec --help; then
@@ -282,7 +279,6 @@ else
 	echo -e "${R}[-] Failed to install netexec!${N}"
 	echo "[>] Continuing..."
 fi
-exit
 cd
 
 echo -e "${B}[*] Installing kerbrute...${N}"
@@ -309,20 +305,17 @@ fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo su
-	source /opt/python-ven/bin/activate
+	sudo source /opt/python-ven/bin/activate
 	cd /opt
-	git clone https://github.com/iphelix/dnschef.git
+	sudo git clone https://github.com/iphelix/dnschef.git
 	cd dnschef
-	pip install -r requirements.txt 
+	sudo pip install -r requirements.txt 
 	if python3 dnschef.py -h; then
 		echo -e "${G}[+] dnschef installed successfully!${N}"
 		echo -e "$[*]{B}Creating dnschef wrapper...${N}"
-		chmod +x dnschef.py
-		exit
+		sudo chmod +x dnschef.py
 		cd
-		sudo su
-		touch /opt/dnschef/dnschef_wrapper.sh
+		sudo touch /opt/dnschef/dnschef_wrapper.sh
 		cat << 'EOF' > /opt/dnschef/dnschef_wrapper.sh
 		#!/bin/bash 
 		
