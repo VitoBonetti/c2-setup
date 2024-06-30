@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Declearing the colors
 G='\033[0;32m'
 B='\033[0;34m'
 O='\033[0;33m'
@@ -10,9 +11,9 @@ N='\033[0m'
 # Troubleshoot color
 P="\e[35m" 
 
-# Function to check if a package is installed
+# Function to check if a package is installed 
 is_installed() {
-    dpkg -l | grep -qw "$1"
+	dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -q "ok installed" 
 }
 
 # Function to install a package if not already installed
@@ -36,6 +37,7 @@ install_package() {
     fi
 }
 
+# starting the script
 start_time=$(date +%s)
 
 echo -e "${O}"
@@ -71,8 +73,10 @@ echo -e "$[+] {G}Done!${N}"
 
 install_package "python3-venv"
 echo -e "${B}[*] Creating 2 Python virtual environments.${N}"
-echo -e "${R}[@] /opt/python-venv  --> High Privilages${N}"
-echo -e "${Y}[@] /tmp/python-venv  --> Low  Privilages${N}"
+echo -e "${Y}[^] /opt/python-venv  --> High Privilages${N}"
+echo -e "${Y}[=] /tmp/python-venv  --> Low  Privilages${N}"
+
+# Create low privilege virtual environment
 cd /tmp
 if python3 -m venv python-venv; then
 	sleep 5
@@ -100,26 +104,19 @@ else
 	exit 1
 fi
 
+# Create high privilege virtual environment
 cd /opt
 if sudo python3 -m venv python-venv; then
 	sleep 5
 	echo -e "${G}[+] High Privilages Python virtual environment created successfully!${N}"
-	sudo su
-	if source /opt/python-venv/bin/activate; then
-		if [ -z "$VIRTUAL_ENV" ]; then
-    		echo -e "${R}[-] No virtual environment is active.${N}"
-		else
-			echo -e "${G}[+] Virtual environment is active: $VIRTUAL_ENV${N}"
-		fi
+	sudo -i bash<<EOF
+	source /opt/python-venv/bin/activate
+	if [ -z "$VIRTUAL_ENV" ]; then
+		echo -e "${R}[-] No virtual environment is active.${N}"
 	else
-		echo -e "${R}"
-		echo "[-] Failed to activate High Privilages Python virtual environment!"
-		echo "[-] The script can't continue."
-		echo "[-] Terminating.."
-		echo -e "${N}"
-		exit 1
-	fi	
-	su ubuntu
+		echo -e "${G}[+] Virtual environment is active: $VIRTUAL_ENV${N}"
+	fi
+	EOF
 else
 	echo -e "${R}"
 	echo "[-] Failed to activate High Privilages Python virtual environment!"
@@ -293,106 +290,112 @@ fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo source /opt/python-ven/bin/activate
+	sudo -i bash<<EOF
+	source /opt/python-ven/bin/activate
 	cd /opt
-	sudo git clone https://github.com/iphelix/dnschef.git
+	git clone https://github.com/iphelix/dnschef.git
 	cd dnschef
-	sudo pip install -r requirements.txt 
+	pip install -r requirements.txt 
 	if python3 dnschef.py -h; then
 		echo -e "${G}[+] dnschef installed successfully!${N}"
 		echo -e "$[*]{B}Creating dnschef wrapper...${N}"
-		sudo chmod +x dnschef.py
+		chmod +x dnschef.py
 		cd
-		sudo tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOF'
+		tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec /opt/dnschef/dnschef.py "\$@" 
-		EOF
-		exit
-		sudo chmod +x /opt/dnschef/dnschef_wrapper.sh
-		sudo ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
+		EOFSCRIPT
+		chmod +x /opt/dnschef/dnschef_wrapper.sh
+		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
 		echo -e "${G}[+] dnschef wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install dnschef!${N}"
 		echo "[>] Continuing..."
-	fi	
+	fi
+	EOF	
 else
+	sudo -i bash<<EOF
 	cd /opt
-	sudo git clone https://github.com/iphelix/dnschef.git
+	git clone https://github.com/iphelix/dnschef.git
 	cd dnschef
-	sudo pip install -r requirements.txt 
+	pip install -r requirements.txt 
 	if python3 dnschef.py -h; then
 		echo -e "${G}[+] dnschef installed successfully!${N}"
-		sudo chmod +x dnschef.py
+		chmod +x dnschef.py
 		cd
-		sudo tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOF' 
+		tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec /opt/dnschef/dnschef.py "\$@" 
-		EOF
+		EOFSCRIPT
 		
-		sudo chmod +x /opt/dnschef/dnschef_wrapper.sh
-		sudo ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
+		chmod +x /opt/dnschef/dnschef_wrapper.sh
+		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
 		echo -e "${G}[+] dnschef wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install dnschef!${N}"
 		echo "[>] Continuing..."
-	fi	
+	fi
+	EOF	
 fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo source /opt/python-ven/bin/activate
+	sudo -i bash<<EOF
+	source /opt/python-ven/bin/activate
 	cd /opt
-	sudo git clone https://github.com/GoSecure/ldap-scanner.git 
+	git clone https://github.com/GoSecure/ldap-scanner.git 
 	cd ldap-scanner
-	sudo pip install impacket 
-	sudo pip install --upgrade setuptools
+	pip install impacket 
+	pip install --upgrade setuptools
 	if python3 ldap-scanner.py -h; then
 		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
 		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
-		sudo chmod +x ldap-scanner.py
+		chmod +x ldap-scanner.py
 		cd
-		sudo tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOF' 
+		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
-		EOF
-		exit
-		sudo chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
-		sudo ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
+		EOFSCRIPT
+		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
+		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
 		echo -e "${G}[+] ldap-scanner wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
 		echo "[>] Continuing..."
-	fi	
+	fi
+	EOF	
 else
+	sudo -i bash<<EOF
 	cd /opt
-	sudo git clone https://github.com/GoSecure/ldap-scanner.git 
+	git clone https://github.com/GoSecure/ldap-scanner.git 
 	cd ldap-scanner
-	sudo pip install impacket 
-	sudo pip install --upgrade setuptools
+	pip install impacket 
+	pip install --upgrade setuptools
 	if python3 ldap-scanner.py -h; then
 		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
 		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
-		sudo chmod +x ldap-scanner.py
+		chmod +x ldap-scanner.py
 		cd
-		sudo touch /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null << 'EOF' 
+		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
-		EOF
-		sudo chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
-		sudo ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
+		EOFSCRIPT
+		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
+		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
 		echo -e "${G}[+] ldap-scanner wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
 		echo "[>] Continuing..."
 	fi	
+	EOF
 fi
 
 echo -e "${B}[*] Installing bloodhound...${N}"
@@ -417,50 +420,54 @@ fi
 
 echo -e "${B}[*] Installing adidnsdump ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+	sudo -i bash<<EOF
 	cd /opt
-	sudo source python-env/bin/activate
-	sudo git clone https://github.com/dirkjanm/adidnsdump 
+	source python-env/bin/activate
+	git clone https://github.com/dirkjanm/adidnsdump 
 	cd adidnsdump
-	sudo pip install . 
+	pip install . 
 	if adidnsdump -h; then
 		echo -e "${G}[+] adidnsdump installed successfully!${N}"
 		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
 		cd
-		sudo tee /opt/adidnsdump/adidnsdump_wrapper.sh >/dev/null << 'EOF' 
+		tee /opt/adidnsdump/adidnsdump_wrapper.sh >/dev/null << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec adidnsdump "\$@" 
-		EOF
-		sudo chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
-		sudo ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
+		EOFSCRIPT
+		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
+		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
 		echo -e "${G}[+] adidnsdump wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
-	fi	
+	fi
+	EOF	
 else
+	sudo -i bash<<EOF
 	cd /opt
-	sudo git clone https://github.com/dirkjanm/adidnsdump 
+	git clone https://github.com/dirkjanm/adidnsdump 
 	cd adidnsdump
-	sudo pip install . 
+	pip install . 
 	if adidnsdump -h; then
 		echo -e "${G}[+] adidnsdump installed successfully!${N}"
 		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
 		cd
-		sudo tee /opt/adidnsdump/adidnsdump_wrapper.sh > /dev/null << 'EOF' 
+		tee /opt/adidnsdump/adidnsdump_wrapper.sh > /dev/null << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec adidnsdump "\$@" 
-		EOF
-		sudo chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
-		sudo ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
+		EOFSCRIPT
+		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
+		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
 		echo -e "${G}[+] adidnsdump wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
 	fi	
+	EOF
 fi
 
 echo -e "${B}[*] Installing nmap ...${N}"
@@ -474,58 +481,62 @@ fi
 
 echo -e "${B}[*] Installing ADenum ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+	sudo -i bash<<EOF
 	cd /opt
-	sudo source python-env/bin/activate 
-	sudo git clone https://github.com/pelletierr/ADenum/
+	source python-env/bin/activate 
+	git clone https://github.com/pelletierr/ADenum/
 	cd ADenum
-	sudo apt install build-essential -y
-	sudo apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
-	sudo systemctl daemon-reload
-	sudo pip install wheel
-	sudo pip install -r requirements.txt
+	apt install build-essential -y
+	apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
+	systemctl daemon-reload
+	pip install wheel
+	pip install -r requirements.txt
 	if python ADenum.py -h; then
 			echo -e "${G}[+] ADenum installed successfully!${N}"
 			echo -e "${B}[*] Creating ADenum wrapper...${N}"
 			cd
-			sudo tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOF' 
+			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT' 
 			#!/bin/bash 
 			
 			source /opt/python-env/bin/activate 
 			exec python3 /opt/ADenum/ADenum.py "\$@" 
-			EOF
-			sudo chmod +x /opt/ADenum/adenum_wrapper.sh
-			sudo ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
+			EOFSCRIPT
+			chmod +x /opt/ADenum/adenum_wrapper.sh
+			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
 			echo -e "${G}[+] ADenum wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
-	fi	
+	fi
+	EOF	
 else
+	sudo -i bash<<EOF
 	cd /opt
-	sudo git clone https://github.com/pelletierr/ADenum/
+	git clone https://github.com/pelletierr/ADenum/
 	cd ADenum
-	sudo apt install build-essential -y
-	sudo apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
-	sudo systemctl daemon-reload
-	sudo pip install wheel
-	sudo pip install -r requirements.txt
+	apt install build-essential -y
+	apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
+	systemctl daemon-reload
+	pip install wheel
+	pip install -r requirements.txt
 	if python ADenum.py -h; then
 			echo -e "${G}[+] ADenum installed successfully!${N}"
 			echo -e "${B}[*] Creating ADenum wrapper...${N}"
 			cd
-			sudo tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOF'
+			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT'
 			#!/bin/bash 
 			
 			source /opt/python-env/bin/activate 
 			exec python3 /opt/ADenum/ADenum.py "\$@" 
-			EOF
-			sudo chmod +x /opt/ADenum/adenum_wrapper.sh
-			sudo ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
+			EOFSCRIPT
+			chmod +x /opt/ADenum/adenum_wrapper.sh
+			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
 			echo -e "${G}[+] ADenum wrapper created!${N}
 	else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
 	fi	
+	EOF
 fi
 
 echo -e "${B}[*] Installing gmapsapiscanner ...${N}"
