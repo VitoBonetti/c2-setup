@@ -6,7 +6,35 @@ O='\033[0;33m'
 Y='\033[1;33m'
 R='\033[0;31m'
 N='\033[0m'
-P="\e[35m"  
+
+# Troubleshoot color
+P="\e[35m" 
+
+# Function to check if a package is installed
+is_installed() {
+    dpkg -l | grep -qw "$1"
+}
+
+# Function to install a package if not already installed
+install_package() {
+    local package=$1
+    echo -e "${B}[*] Installing ${package}...${N}"
+    if is_installed "${package}"; then
+        echo -e "${G}[+] ${package} is already installed!${N}"
+    else
+        if sudo apt install -y "${package}"; then
+            if command -v "${package}" &> /dev/null; then
+                echo -e "${G}[+] ${package} installed successfully!${N}"
+            else
+                echo -e "${R}[-] Failed to verify ${package} installation!${N}"
+                echo "[>] Continuing..."
+            fi
+        else
+            echo -e "${R}[-] Failed to install ${package}!${N}"
+            echo "[>] Continuing..."
+        fi
+    fi
+}
 
 start_time=$(date +%s)
 
@@ -14,6 +42,8 @@ echo -e "${O}"
 echo "[+] AWS - C2 SETUP"
 echo "[*] Starting the process..."
 echo -e "${N}"
+
+# Update and Upgrade the system
 
 echo -e "${B}[*] Updating the system...${N}"
 if sudo apt update -y; then
@@ -29,19 +59,17 @@ else
 	echo -e "$[-] {R}Failed to upgrade the system!${N}"
 fi
 
+# Create persistence on the /tmp folder
+
 echo -e "${B}[*] Make the /tmp folder persistance...${N}"
 sudo touch /etc/tmpfiles.d/tmp.conf
 echo "# Disable automatic cleanup of /tmp" | sudo tee /etc/tmpfiles.d/tmp.conf
 echo "d /tmp 1777 root root -" | sudo tee -a /etc/tmpfiles.d/tmp.conf
 echo -e "$[+] {G}Done!${N}"
 
-echo -e "${B}[*] Installing Python virtual environment...${N}"
-if sudo apt install python3-venv -y; then
-	echo -e "${G}[+] python3-venv installed successfully!${N}"
-else
-	 echo -e "$[-] {R}Failed to install python3-venv!${N}"
-fi
+# Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
+install_package "python3-venv"
 echo -e "${B}[*] Creating 2 Python virtual environments.${N}"
 echo -e "${R}[@] /opt/python-venv  --> High Privilages${N}"
 echo -e "${Y}[@] /tmp/python-venv  --> Low  Privilages${N}"
@@ -76,7 +104,7 @@ cd /opt
 if sudo python3 -m venv python-venv; then
 	sleep 5
 	echo -e "${G}[+] High Privilages Python virtual environment created successfully!${N}"
-	if source python-venv/bin/activate; then
+	if sudo source python-venv/bin/activate; then
 		if [ -z "$VIRTUAL_ENV" ]; then
     		echo -e "${R}[-] No virtual environment is active.${N}"
 		else
@@ -101,65 +129,23 @@ fi
 
 cd
 
-echo -e "${B}[*] Installing net-tools...${N}"
-if sudo apt install net-tools -y; then
-	if ifconfig; then
-		echo -e "${G}[+] net-tools installed successfully!${N}"
-	else
-		echo -e "${R}[-] Failed to install net-tools!${N}"
-		echo "[>] Continuing..."
-	fi
+install_package "net-tools"
+install_package "git"
+install_package "plocate"
+
+install_package "apache2"
+sudo systemctl start apache2
+if sudo systemctl is-active --quiet apache2; then
+	echo -e "${G}[+] apache2 web server is up and running!${N}"
 else
-	echo -e "${R}[-] Failed to install net-tools!${N}"
+	echo -e "${R}[-] Failed to start apache2 web server!${N}"
 	echo "[>] Continuing..."
 fi
 
-
-echo -e "${B}[*] Installing git...${N}"
-if sudo apt install git -y; then
-	if git; then
-		echo -e "${G}[+] git installed successfully!${N}"
-	else
-		echo -e "${R}[-] Failed to install git!${N}"
-		echo "[>] Continuing..."
-	fi
-else
-	echo -e "${R}[-] Failed to install git!${N}"
-	echo "[>] Continuing..."
-fi
-
-
-echo -e "${B}[*] Installing plocate...${N}"
-if sudo apt install plocate -y; then
-	if locate -h > /dev/null 2>&1; then
-		echo -e "${G}[+] plocate installed successfully!${N}"
-	else
-		echo -e "${R}[-] Failed to install plocate!${N}"
-		echo "[>] Continuing..."
-	fi
-else
-	echo -e "${R}[-] Failed to install plocate!${N}"
-	echo "[>] Continuing..."
-fi
-
-echo -e "${B}[*] Installing apache2...${N}"
-if sudo apt install apache2 -y; then
-	echo -e "${G}[+] apache2 installed successfully!${N}"
-	sudo systemctl start apache2
-	if sudo systemctl is-active --quiet apache2; then
-		echo -e "${G}[+] apache2 web server is up and running!${N}"
-	else
-		echo -e "${R}[-] Failed to start apache2 web server!${N}"
-		echo "[>] Continuing..."
-	fi
-else
-	echo -e "${R}[-] Failed to install apache2 web server!${N}"
-	echo "[>] Continuing..."
-fi
 
 echo -e "${B}[*] Installing golang...${N}"
-sudo apt install snapd -y > /dev/null 2>&1
-if sudo snap install go --classic > /dev/null 2>&1; then
+install_package "snapd"
+if sudo snap install go --classic; then
 	go version
 	echo -e "${G}[+] golang installed successfully!${N}"
 else
@@ -224,7 +210,7 @@ else
 	echo -e "${R}[-] Failed to cloned ligolo agent!${N}"
 	echo "[>] Continuing..."
 fi
-
+cd
 echo -e "${B}[*] Installing docker...${N}"
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt remove $pkg; done;
 sudo apt update -y 
@@ -315,8 +301,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "$[*]{B}Creating dnschef wrapper...${N}"
 		sudo chmod +x dnschef.py
 		cd
-		sudo touch /opt/dnschef/dnschef_wrapper.sh
-		cat << 'EOF' > /opt/dnschef/dnschef_wrapper.sh
+		sudo tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOF'
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
@@ -331,25 +316,21 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo "[>] Continuing..."
 	fi	
 else
-	sudo su
 	cd /opt
-	git clone https://github.com/iphelix/dnschef.git
+	sudo git clone https://github.com/iphelix/dnschef.git
 	cd dnschef
-	pip install -r requirements.txt 
+	sudo pip install -r requirements.txt 
 	if python3 dnschef.py -h; then
 		echo -e "${G}[+] dnschef installed successfully!${N}"
-		chmod +x dnschef.py
-		exit
+		sudo chmod +x dnschef.py
 		cd
-		sudo su
-		touch /opt/dnschef/dnschef_wrapper.sh
-		cat << 'EOF' > /opt/dnschef/dnschef_wrapper.sh
+		sudo tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOF' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec /opt/dnschef/dnschef.py "\$@" 
 		EOF
-		exit
+		
 		sudo chmod +x /opt/dnschef/dnschef_wrapper.sh
 		sudo ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
 		echo -e "${G}[+] dnschef wrapper created!${N}
@@ -361,22 +342,18 @@ fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo su
-	source /opt/python-ven/bin/activate
+	sudo source /opt/python-ven/bin/activate
 	cd /opt
-	git clone https://github.com/GoSecure/ldap-scanner.git 
+	sudo git clone https://github.com/GoSecure/ldap-scanner.git 
 	cd ldap-scanner
-	pip install impacket 
-	pip install --upgrade setuptools
+	sudo pip install impacket 
+	sudo pip install --upgrade setuptools
 	if python3 ldap-scanner.py -h; then
 		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
 		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
-		chmod +x ldap-scanner.py
-		exit
+		sudo chmod +x ldap-scanner.py
 		cd
-		sudo su
-		touch /opt/ldap-scanner/ldap-scanner_wrapper.sh
-		cat << 'EOF' > /opt/ldap-scanner/ldap-scanner_wrapper.sh
+		sudo tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOF' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
@@ -391,27 +368,22 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo "[>] Continuing..."
 	fi	
 else
-	sudo su
 	cd /opt
-	git clone https://github.com/GoSecure/ldap-scanner.git 
+	sudo git clone https://github.com/GoSecure/ldap-scanner.git 
 	cd ldap-scanner
-	pip install impacket 
-	pip install --upgrade setuptools
+	sudo pip install impacket 
+	sudo pip install --upgrade setuptools
 	if python3 ldap-scanner.py -h; then
 		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
 		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
-		chmod +x ldap-scanner.py
-		exit
+		sudo chmod +x ldap-scanner.py
 		cd
-		sudo su
-		touch /opt/ldap-scanner/ldap-scanner_wrapper.sh
-		cat << 'EOF' > /opt/ldap-scanner/ldap-scanner_wrapper.sh
+		sudo touch /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null << 'EOF' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
 		EOF
-		exit
 		sudo chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
 		sudo ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
 		echo -e "${G}[+] ldap-scanner wrapper created!${N}
@@ -444,25 +416,20 @@ fi
 echo -e "${B}[*] Installing adidnsdump ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	cd /opt
-	sudo su
-	source python-env/bin/activate
-	git clone https://github.com/dirkjanm/adidnsdump 
+	sudo source python-env/bin/activate
+	sudo git clone https://github.com/dirkjanm/adidnsdump 
 	cd adidnsdump
-	pip install . 
+	sudo pip install . 
 	if adidnsdump -h; then
 		echo -e "${G}[+] adidnsdump installed successfully!${N}"
 		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
-		exit
 		cd
-		sudo su
-		touch /opt/adidnsdump/adidnsdump_wrapper.sh
-		cat << 'EOF' > /opt/adidnsdump/adidnsdump_wrapper.sh
+		sudo tee /opt/adidnsdump/adidnsdump_wrapper.sh >/dev/null << 'EOF' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec adidnsdump "\$@" 
 		EOF
-		exit
 		sudo chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		sudo ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
 		echo -e "${G}[+] adidnsdump wrapper created!${N}
@@ -472,24 +439,19 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	fi	
 else
 	cd /opt
-	sudo su
-	git clone https://github.com/dirkjanm/adidnsdump 
+	sudo git clone https://github.com/dirkjanm/adidnsdump 
 	cd adidnsdump
-	pip install . 
+	sudo pip install . 
 	if adidnsdump -h; then
 		echo -e "${G}[+] adidnsdump installed successfully!${N}"
 		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
-		exit
 		cd
-		sudo su
-		touch /opt/adidnsdump/adidnsdump_wrapper.sh
-		cat << 'EOF' > /opt/adidnsdump/adidnsdump_wrapper.sh
+		sudo tee /opt/adidnsdump/adidnsdump_wrapper.sh > /dev/null << 'EOF' 
 		#!/bin/bash 
 		
 		source /opt/python-env/bin/activate 
 		exec adidnsdump "\$@" 
 		EOF
-		exit
 		sudo chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		sudo ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
 		echo -e "${G}[+] adidnsdump wrapper created!${N}
@@ -510,30 +472,25 @@ fi
 
 echo -e "${B}[*] Installing ADenum ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
-	sudo su
 	cd /opt
-	source python-env/bin/activate 
-	git clone https://github.com/pelletierr/ADenum/
+	sudo source python-env/bin/activate 
+	sudo git clone https://github.com/pelletierr/ADenum/
 	cd ADenum
 	sudo apt install build-essential -y
 	sudo apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
-	systemctl daemon-reload
-	pip install wheel
-	pip install -r requirements.txt
+	sudo systemctl daemon-reload
+	sudo pip install wheel
+	sudo pip install -r requirements.txt
 	if python ADenum.py -h; then
 			echo -e "${G}[+] ADenum installed successfully!${N}"
 			echo -e "${B}[*] Creating ADenum wrapper...${N}"
-			exit
 			cd
-			sudo su
-			touch /opt/ADenum/adenum_wrapper.sh
-			cat << 'EOF' > /opt/ADenum/adenum_wrapper.sh
+			sudo tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOF' 
 			#!/bin/bash 
 			
 			source /opt/python-env/bin/activate 
 			exec python3 /opt/ADenum/ADenum.py "\$@" 
 			EOF
-			exit
 			sudo chmod +x /opt/ADenum/adenum_wrapper.sh
 			sudo ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
 			echo -e "${G}[+] ADenum wrapper created!${N}
@@ -542,29 +499,24 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo "[>] Continuing..."
 	fi	
 else
-	sudo su
 	cd /opt
-	git clone https://github.com/pelletierr/ADenum/
+	sudo git clone https://github.com/pelletierr/ADenum/
 	cd ADenum
 	sudo apt install build-essential -y
 	sudo apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
-	systemctl daemon-reload
-	pip install wheel
-	pip install -r requirements.txt
+	sudo systemctl daemon-reload
+	sudo pip install wheel
+	sudo pip install -r requirements.txt
 	if python ADenum.py -h; then
 			echo -e "${G}[+] ADenum installed successfully!${N}"
 			echo -e "${B}[*] Creating ADenum wrapper...${N}"
-			exit
 			cd
-			sudo su
-			touch /opt/ADenum/adenum_wrapper.sh
-			cat << 'EOF' > /opt/ADenum/adenum_wrapper.sh
+			sudo tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOF'
 			#!/bin/bash 
 			
 			source /opt/python-env/bin/activate 
 			exec python3 /opt/ADenum/ADenum.py "\$@" 
 			EOF
-			exit
 			sudo chmod +x /opt/ADenum/adenum_wrapper.sh
 			sudo ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
 			echo -e "${G}[+] ADenum wrapper created!${N}
@@ -576,22 +528,17 @@ fi
 
 echo -e "${B}[*] Installing gmapsapiscanner ...${N}"
 cd /opt
-sudo su
-git clone https://github.com/ozguralp/gmapsapiscanner.git
+sudo git clone https://github.com/ozguralp/gmapsapiscanner.git
 cd gmapsapiscanner
 if python3 maps_api_scanner.py; then
 	echo -e "${G}[+] gmapsapiscanner installed successfully!${N}"
 	echo -e "${B}[*] Creating gmapsapiscanner wrapper...${N}"
-	exit
 	cd
-	sudo su
-	touch /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
-	cat << 'EOF' > /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
+	sudo tee /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh > /dev/null << 'EOF' 
 	#!/bin/bash
 
 	exec python3 /opt/gmapsapiscanner/maps_api_scanner.py "$@"
 	EOF
-	exit
 	sudo chmod +x /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
 	sudo ln -s /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh /usr/local/bin/gmapsapiscanner
 	echo -e "${G}[+] gmapsapiscanner wrapper created!${N}
@@ -602,48 +549,29 @@ fi
 
 echo -e "${B}[*] Installing nikto...${N}"
 cd /opt
-sudo su
-git clone https://github.com/sullo/nikto.git
+sudo git clone https://github.com/sullo/nikto.git
 cd nikto
-docker build -t sullo/nikto .
-if docker run --rm sullo/nikto; then
+sudo docker build -t sullo/nikto .
+if sudo docker run --rm sullo/nikto; then
 	echo -e "${G}[+] nikto installed successfully!${N}"
 else
 	echo -e "${R}[-] Failed to install nikto!${N}"
 	echo "[>] Continuing..."
 fi	
-exit
 cd
 
 echo -e "${B}[*] Installing SecLists...${N}"
 sudo mkdir /usr/share/wordlists
 cd /usr/share/wordlists
-sudo su
-git clone https://github.com/danielmiessler/SecLists.git
-exit
+sudo git clone https://github.com/danielmiessler/SecLists.git
 cd
 sudo chmod 755 /usr/share/wordlists
 sudo chmod -R a+r /usr/share/wordlists
 sudo find /usr/share/wordlists -type d -exec chmod 755 {} \;
 echo -e "${G}[+] SecLists installed successfully!${N}"
 
-echo -e "${B}[*] Installing hashcat...${N}"
-sudo apt install hashcat -y
-if hashcat -h; then
-	echo -e "${G}[+] hashcat installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install hashcat!${N}"
-	echo "[>] Continuing..."
-fi	
-
-echo -e "${B}[*] Installing hydra...${N}"
-sudo apt install hydra-gtk -y
-if hydra -h; then
-	echo -e "${G}[+] hydra installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install hydra!${N}"
-	echo "[>] Continuing..."
-fi	
+install_package "hashcat"
+install_package "hydra-gtk"
 
 echo -e "${B}[*] Installing sqlmap...${N}"
 sudo snap install sqlmap
@@ -654,32 +582,9 @@ else
 	echo "[>] Continuing..."
 fi	
 
-echo -e "${B}[*] Installing gobuster...${N}"
-sudo apt install gobuster -y
-if gobuster -h; then
-	echo -e "${G}[+] gobuster installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install gobuster!${N}"
-	echo "[>] Continuing..."
-fi	
-
-echo -e "${B}[*] Installing dirb...${N}"
-sudo apt install dirb -y
-if dirb; then
-	echo -e "${G}[+] dirb installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install dirb!${N}"
-	echo "[>] Continuing..."
-fi	
-
-echo -e "${B}[*] Installing hping3...${N}"
-sudo apt install hping3 -y
-if hping3 -h; then
-	echo -e "${G}[+] hping3 installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install hping3!${N}"
-	echo "[>] Continuing..."
-fi
+install_package "gobuster"
+install_package "dirb"
+install_package "hping3"
 
 echo -e "${B}[*] Installing wpscan...${N}"
 sudo apt  install ruby-rubygems -y
@@ -702,41 +607,11 @@ else
 	echo "[>] Continuing..."
 fi	
 
-echo -e "${B}[*] Installing john...${N}"
-sudo apt install john -y
-if john; then
-	echo -e "${G}[+] john installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install john!${N}"
-	echo "[>] Continuing..."
-fi
 
-echo -e "${B}[*] Installing cewl...${N}"
-sudo apt install cewl -y
-if cewl -h; then
-	echo -e "${G}[+] cewl installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install cewl!${N}"
-	echo "[>] Continuing..."
-fi
-
-echo -e "${B}[*] Installing smbmap...${N}"
-sudo apt install smbmap -y
-if smbmap; then
-	echo -e "${G}[+] smbmap installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install smbmap!${N}"
-	echo "[>] Continuing..."
-fi
-
-echo -e "${B}[*] Installing socat...${N}"
-sudo apt install socat -y
-if socat -h; then
-	echo -e "${G}[+] socat installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install socat!${N}"
-	echo "[>] Continuing..."
-fi
+install_package "john"
+install_package "cewl"
+install_package "smbmap"
+install_package "socat"
 
 echo -e "${B}[*] Installing enum4linux...${N}"
 sudo snap install enum4linux
@@ -747,32 +622,9 @@ else
 	echo "[>] Continuing..."
 fi
 
-echo -e "${B}[*] Installing screen...${N}"
-sudo apt install screen -y
-if screen -h; then
-	echo -e "${G}[+] screen installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install screen!${N}"
-	echo "[>] Continuing..."
-fi
-
-echo -e "${B}[*] Installing whatweb...${N}"
-sudo apt install whatweb -y
-if whatweb -h; then
-	echo -e "${G}[+] whatweb installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install whatweb!${N}"
-	echo "[>] Continuing..."
-fi
-
-echo -e "${B}[*] Installing sendemail...${N}"
-sudo apt install sendemail -y
-if sendemail; then
-	echo -e "${G}[+] sendemail installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install sendemail!${N}"
-	echo "[>] Continuing..."
-fi
+install_package "screen"
+install_package "whatweb"
+install_package "sendemail" 
 
 echo -e "${B}[*] Installing gowitness...${N}"
 sudo docker pull leonjza/gowitness
@@ -783,10 +635,9 @@ else
 	echo "[>] Continuing..."
 fi
 
-sudo su
-mkdir /opt/whatihave
-touch /opt/whatihave/whatihave.txt
-cat << 'EOF' > /opt/whatihave/whatihave.txt
+
+sudo mkdir /opt/whatihave
+sudo tee /opt/whatihave/whatihave.txt > /dev/null  << 'EOF' 
 
 ##########################################################################################
 ##                                USEFUL INFORMATION                                    ##
@@ -823,21 +674,19 @@ cat << 'EOF' > /opt/whatihave/whatihave.txt
 ## To see the complete list of tools run the command `inthebelly`...
 EOF
 
-chmod 644 /opt/whatihave/whatihave.txt
-touch /opt/whatihave/whatihave_wrapper.sh
-cat << 'EOF' > /opt/whatihave/whatihave_wrapper.sh
+sudo chmod 644 /opt/whatihave/whatihave.txt
+sudo tee /opt/whatihave/whatihave_wrapper.sh  > /dev/null  << 'EOF' 
 #!/bin/bash
 
 exec cat /opt/whatihave/whatihave.txt
 EOF
-chmod +x /opt/whatihave/whatihave_wrapper.sh 
-ln -s /opt/whatihave/whatihave_wrapper.sh /usr/local/bin/whatihave
-echo "cat /opt/whatihave/whatihave.txt" >> /etc/bash.bashrc
+sudo chmod +x /opt/whatihave/whatihave_wrapper.sh 
+sudo ln -s /opt/whatihave/whatihave_wrapper.sh /usr/local/bin/whatihave
+echo "cat /opt/whatihave/whatihave.txt" | sudo tee -a /etc/bash.bashrc
 source /etc/bash.bashrc
 
-mkdir /opt/inthebelly
-touch /opt/inthebelly/inthebelly.txt
-cat << 'EOF' > /opt/inthebelly/inthebelly.txt
+sudo mkdir /opt/inthebelly
+sudo tee /opt/inthebelly/inthebelly.txt  > /dev/null  << 'EOF' 
 
 ##########################################################
 ##              All installed packages                  ##
@@ -874,16 +723,14 @@ cat << 'EOF' > /opt/inthebelly/inthebelly.txt
 ## To see this message again run the command 'inthebelly'...
 ## To know more about docker apps, shortcut and locations run the command `whatihave`...
 EOF
-chmod 644 /opt/inthebelly/inthebelly.txt
-touch /opt/inthebelly/inthebelly_wrapper.sh
-cat << 'EOF' > /opt/inthebelly/inthebelly_wrapper.sh
+sudo chmod 644 /opt/inthebelly/inthebelly.txt
+sudo tee /opt/inthebelly/inthebelly_wrapper.sh  > /dev/null  << 'EOF' 
 #!/bin/bash
 
 exec cat /opt/inthebelly/inthebelly.txt
 EOF
-chmod +x /opt/inthebelly/inthebelly_wrapper.sh 
-ln -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
-exit
+sudo chmod +x /opt/inthebelly/inthebelly_wrapper.sh 
+lsudo n -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
 cd
 inthebelly
 
