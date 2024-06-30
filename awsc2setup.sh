@@ -104,7 +104,8 @@ cd /opt
 if sudo python3 -m venv python-venv; then
 	sleep 5
 	echo -e "${G}[+] High Privilages Python virtual environment created successfully!${N}"
-	if sudo source python-venv/bin/activate; then
+	sudo su
+	if source /opt/python-venv/bin/activate; then
 		if [ -z "$VIRTUAL_ENV" ]; then
     		echo -e "${R}[-] No virtual environment is active.${N}"
 		else
@@ -118,6 +119,7 @@ if sudo python3 -m venv python-venv; then
 		echo -e "${N}"
 		exit 1
 	fi	
+	su ubuntu
 else
 	echo -e "${R}"
 	echo "[-] Failed to activate High Privilages Python virtual environment!"
