@@ -555,7 +555,7 @@ if python3 maps_api_scanner.py; then
 	EOF
 	sudo chmod +x /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
 	sudo ln -s /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh /usr/local/bin/gmapsapiscanner
-	echo -e "${G}[+] gmapsapiscanner wrapper created!${N}
+	echo -e "${G}[+] gmapsapiscanner wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install gmapsapiscanner!${N}"
 	echo "[>] Continuing..."
