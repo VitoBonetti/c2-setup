@@ -757,7 +757,7 @@ sudo tee /opt/inthebelly/inthebelly_wrapper.sh  > /dev/null  << 'EOF'
 exec cat /opt/inthebelly/inthebelly.txt
 EOF
 sudo chmod +x /opt/inthebelly/inthebelly_wrapper.sh 
-lsudo n -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
+sudo ln -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
 cd
 inthebelly
 
