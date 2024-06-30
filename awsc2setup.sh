@@ -285,7 +285,7 @@ if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
 	source /tmp/python-ven/bin/activate
 	pip install kerbrute
 	pip install --upgrade setuptools
-	if kerbrute; then
+	if kerbrute --help; then
 		echo -e "${G}[+] kerbrute installed successfully!${N}"
 	else
 		echo -e "${R}[-] Failed to install kerbrute!${N}"
@@ -579,7 +579,7 @@ cd /opt
 sudo git clone https://github.com/sullo/nikto.git
 cd nikto
 sudo docker build -t sullo/nikto .
-if sudo docker run --rm sullo/nikto; then
+if sudo docker run --rm sullo/nikto -Version ; then
 	echo -e "${G}[+] nikto installed successfully!${N}"
 else
 	echo -e "${R}[-] Failed to install nikto!${N}"
