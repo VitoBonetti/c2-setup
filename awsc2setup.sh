@@ -135,7 +135,6 @@ fi
 
 cd
 
-install_package "net-tools"
 sudo apt install -y net-tools
 if dpkg -l | grep net-tools; then
 	echo -e "${G}[+] net-tools installed successfully!${N}"
