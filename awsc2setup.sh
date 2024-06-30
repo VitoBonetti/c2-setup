@@ -71,7 +71,14 @@ echo -e "${G}[+] Done!${N}"
 
 # Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
-install_package "python3-venv"
+
+sudo apt install -y python3-venv
+if dpkg -l | grep python3-venv; then
+	echo -e "${G}[+] python3-venv installed successfully!${N}"
+else
+    echo -e "${R}[-] Failed to verify python3-venv installation!${N}"
+     echo "[>] Continuing..."
+fi
 echo -e "${B}[*] Creating 2 Python virtual environments.${N}"
 echo -e "${Y}[^] /opt/python-venv  --> High Privilages${N}"
 echo -e "${Y}[=] /tmp/python-venv  --> Low  Privilages${N}"
@@ -129,6 +136,13 @@ fi
 cd
 
 install_package "net-tools"
+sudo apt install -y net-tools
+if dpkg -l | grep net-tools; then
+	echo -e "${G}[+] net-tools installed successfully!${N}"
+else
+    echo -e "${R}[-] Failed to verify net-tools installation!${N}"
+     echo "[>] Continuing..."
+fi
 install_package "git"
 install_package "plocate"
 
@@ -272,7 +286,7 @@ if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
 	source /tmp/python-ven/bin/activate
 	pip install kerbrute
 	pip install --upgrade setuptools
-	if kerbrute --help; then
+	if kerbrute; then
 		echo -e "${G}[+] kerbrute installed successfully!${N}"
 	else
 		echo -e "${R}[-] Failed to install kerbrute!${N}"
@@ -552,7 +566,7 @@ if python3 maps_api_scanner.py; then
 	#!/bin/bash
 
 	exec python3 /opt/gmapsapiscanner/maps_api_scanner.py "$@"
-	EOF
+EOF
 	sudo chmod +x /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
 	sudo ln -s /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh /usr/local/bin/gmapsapiscanner
 	echo -e "${G}[+] gmapsapiscanner wrapper created!${N}"
