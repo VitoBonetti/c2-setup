@@ -4,27 +4,7 @@
 
 Optimize for Ubuntu 20.04 LTS on Google Cloud Platform
 
-### What it does
+## awsc2setup.sh 
 
-+ Update and Upgrade the system
-+ Create persistance for the /tmp folder in case of accidental reboot
-+ Install, create and activate a python3 venv
-+ Installing net-tools
-+ Installing mlocate
-+ Installing apache2
-+ Installing go
-+ Installing garble
-+ Installing nmap
-+ Installing ligolo proxy and create a ligolo TUN adapter for the tunnel
-+ Clone ligolo agent repository
-+ Installing docker
-+ Installing ManSpider (docker)
-+ Installing certipy-ad
-+ Installing EnumShare @Bruno
-+ Installing NetExec (docker)
-+ Installing Kerbrute
-+ Installing DnsChef
-+ Installing ldap-scanner
-+ Installing bloodhound.py
-+ Installing adidnsdump
+Optimize for Ubuntu 24.04 LTS on a EC2 - AWS
 
