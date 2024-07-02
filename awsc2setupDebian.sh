@@ -183,7 +183,16 @@ fi
 install_package "git"
 install_package "plocate"
 
-install_package "apache2"
+
+sudo apt install apache2 -y
+sudo ln -s /usr/sbin/apache2 /usr/local/bin/apache2
+if apache2 -v; then
+	echo -e "${G}[+] apache2 web server  installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to verify apache2 web server installation!${N}"
+	echo "[>] Continuing..."
+fi
+
 sudo systemctl start apache2
 if sudo systemctl is-active --quiet apache2; then
 	echo -e "${G}[+] apache2 web server is up and running!${N}"
@@ -194,7 +203,18 @@ fi
 
 
 echo -e "${B}[*] Installing golang...${N}"
-install_package "snapd"
+sudo apt install snapd -y
+if snap version; then
+	echo -e "${G}[+] snap  installed successfully!${N}"
+else
+	echo -e "${R}"
+	echo "[-] Failed to install snap!"
+	echo "[-] The script can't continue."
+	echo "[-] Terminating.."
+	echo -e "${N}"
+	exit 1
+fi
+
 if sudo snap install go --classic; then
 	sudo ln -s /snap/go/current/bin/go /usr/local/bin/go
 	go version
@@ -263,7 +283,547 @@ else
 	echo "[>] Continuing..."
 fi
 cd
+echo -e "${B}[*] Installing docker...${N}"
+sudo apt update -y
+sudo apt install apt-transport-https ca-certificates curl gnupg -y
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update -y
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo systemctl is-active docker
+if sudo docker run hello-world; then
+	echo -e "${G}[+] docker installed successfully!${N}"
+else
+	echo -e "${R}"
+	echo "[-] Failed to install docker!"
+	echo "[-] The script can't continue."
+	echo "[-] Terminating.."
+	echo -e "${N}"
+	exit 1
+fi
 
+echo -e "${B}[*] Installing manspider...${N}"
+sudo docker pull blacklanternsecurity/manspider
+if sudo docker run blacklanternsecurity/manspider --help; then
+	echo -e "${G}[+] maspider installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install manspider!${N}"
+	echo "[>] Continuing..."
+fi
+
+echo -e "${B}[*] Installing certipy-ad...${N}"
+if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
+	source /tmp/python-ven/bin/activate
+	pip install wheel
+	pip install lxml==4.9.3
+	pip install certipy-ad
+else
+	pip install wheel
+	pip install lxml==4.9.3
+	pip install certipy-ad
+fi
+echo -e "${G}[+] certipy-ad installed successfully!${N}"
+
+echo -e "${B}[*] Installing NetExec...${N}"
+cd /opt
+sudo git clone https://github.com/Pennyw0rth/NetExec 
+cd NetExec
+sudo docker build -t netexec:latest . 
+if sudo docker run netexec --help; then
+	echo -e "${G}[+] netexec installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install netexec!${N}"
+	echo "[>] Continuing..."
+fi
+cd
+
+echo -e "${B}[*] Installing kerbrute...${N}"
+if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
+	source /tmp/python-ven/bin/activate
+	pip install kerbrute
+	pip install --upgrade setuptools
+	if kerbrute --help; then
+		echo -e "${G}[+] kerbrute installed successfully!${N}"
+	else
+		echo -e "${R}[-] Failed to install kerbrute!${N}"
+		echo "[>] Continuing..."
+	fi	
+else
+	pip install kerbrute
+	pip install --upgrade setuptools
+	if kerbrute; then
+		echo -e "${G}[+] kerbrute installed successfully!${N}"
+	else
+		echo -e "${R}[-] Failed to install kerbrute!${N}"
+		echo "[>] Continuing..."
+	fi	
+fi
+
+echo -e "${B}[*] Installing dnschef...${N}"
+if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+	sudo -i bash << 'EOF'
+	source /opt/python-ven/bin/activate
+	cd /opt
+	git clone https://github.com/iphelix/dnschef.git
+	cd dnschef
+	pip install -r requirements.txt 
+	if python3 dnschef.py -h; then
+		echo -e "${G}[+] dnschef installed successfully!${N}"
+		echo -e "$[*]{B}Creating dnschef wrapper...${N}"
+		chmod +x dnschef.py
+		cd
+		tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
+		#!/bin/bash 
+		
+		source /opt/python-env/bin/activate 
+		exec /opt/dnschef/dnschef.py "\$@" 
+		EOFSCRIPT
+		chmod +x /opt/dnschef/dnschef_wrapper.sh
+		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
+		echo -e "${G}[+] dnschef wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install dnschef!${N}"
+		echo "[>] Continuing..."
+	fi
+EOF	
+else
+	sudo -i bash  << 'EOF'
+	cd /opt
+	git clone https://github.com/iphelix/dnschef.git
+	cd dnschef
+	pip install -r requirements.txt 
+	if python3 dnschef.py -h; then
+		echo -e "${G}[+] dnschef installed successfully!${N}"
+		chmod +x dnschef.py
+		cd
+		tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOFSCRIPT' 
+		#!/bin/bash 
+		
+		source /opt/python-env/bin/activate 
+		exec /opt/dnschef/dnschef.py "\$@" 
+		EOFSCRIPT
+		
+		chmod +x /opt/dnschef/dnschef_wrapper.sh
+		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
+		echo -e "${G}[+] dnschef wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install dnschef!${N}"
+		echo "[>] Continuing..."
+	fi
+EOF	
+fi
+
+echo -e "${B}[*] Installing ldap-scanner...${N}"
+if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+	sudo -i bash<< 'EOF'
+	source /opt/python-ven/bin/activate
+	cd /opt
+	git clone https://github.com/GoSecure/ldap-scanner.git 
+	cd ldap-scanner
+	pip install impacket 
+	pip install --upgrade setuptools
+	if python3 ldap-scanner.py -h; then
+		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
+		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
+		chmod +x ldap-scanner.py
+		cd
+		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
+		#!/bin/bash 
+		
+		source /opt/python-env/bin/activate 
+		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
+		EOFSCRIPT
+		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
+		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
+		echo -e "${G}[+] ldap-scanner wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
+		echo "[>] Continuing..."
+	fi
+EOF	
+else
+	sudo -i bash << 'EOF'
+	cd /opt
+	git clone https://github.com/GoSecure/ldap-scanner.git 
+	cd ldap-scanner
+	pip install impacket 
+	pip install --upgrade setuptools
+	if python3 ldap-scanner.py -h; then
+		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
+		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
+		chmod +x ldap-scanner.py
+		cd
+		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
+		#!/bin/bash 
+		
+		source /opt/python-env/bin/activate 
+		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
+		EOFSCRIPT
+		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
+		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
+		echo -e "${G}[+] ldap-scanner wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
+		echo "[>] Continuing..."
+	fi	
+EOF
+fi
+
+echo -e "${B}[*] Installing bloodhound...${N}"
+if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
+	source /tmp/python-ven/bin/activate
+	pip install bloodhound 
+	if bloodhound-python --help; then
+		echo -e "${G}[+]bloodhound installed successfully!${N}"
+	else
+		echo -e "${R}[-] Failed to install bloodhound!${N}"
+		echo "[>] Continuing..."
+	fi	
+else
+	pip install bloodhound 
+	if bloodhound-python --help; then
+		echo -e "${G}[+]bloodhound installed successfully!${N}"
+	else
+		echo -e "${R}[-] Failed to install bloodhound!${N}"
+		echo "[>] Continuing..."
+	fi	
+fi
+
+echo -e "${B}[*] Installing adidnsdump ...${N}"
+if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+	sudo -i bash << 'EOF'
+	cd /opt
+	source python-env/bin/activate
+	git clone https://github.com/dirkjanm/adidnsdump 
+	cd adidnsdump
+	pip install . 
+	if adidnsdump -h; then
+		echo -e "${G}[+] adidnsdump installed successfully!${N}"
+		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
+		cd
+		tee /opt/adidnsdump/adidnsdump_wrapper.sh >/dev/null << 'EOFSCRIPT' 
+		#!/bin/bash 
+		
+		source /opt/python-env/bin/activate 
+		exec adidnsdump "\$@" 
+		EOFSCRIPT
+		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
+		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
+		echo -e "${G}[+] adidnsdump wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install adidnsdump!${N}"
+		echo "[>] Continuing..."
+	fi
+EOF	
+else
+	sudo -i bash << 'EOF'
+	cd /opt
+	git clone https://github.com/dirkjanm/adidnsdump 
+	cd adidnsdump
+	pip install . 
+	if adidnsdump -h; then
+		echo -e "${G}[+] adidnsdump installed successfully!${N}"
+		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
+		cd
+		tee /opt/adidnsdump/adidnsdump_wrapper.sh > /dev/null << 'EOFSCRIPT' 
+		#!/bin/bash 
+		
+		source /opt/python-env/bin/activate 
+		exec adidnsdump "\$@" 
+		EOFSCRIPT
+		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
+		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
+		echo -e "${G}[+] adidnsdump wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install adidnsdump!${N}"
+		echo "[>] Continuing..."
+	fi	
+EOF
+fi
+
+echo -e "${B}[*] Installing nmap ...${N}"
+sudo snap install nmap
+if nmap --version; then
+	echo -e "${G}[+]nmap installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install nmap!${N}"
+	echo "[>] Continuing..."
+fi	
+
+echo -e "${B}[*] Installing ADenum ...${N}"
+if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+	sudo -i bash << 'EOF'
+	cd /opt
+	source python-env/bin/activate 
+	git clone https://github.com/pelletierr/ADenum/
+	cd ADenum
+	apt install build-essential -y
+	apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
+	systemctl daemon-reload
+	pip install wheel
+	pip install -r requirements.txt
+	if python ADenum.py -h; then
+			echo -e "${G}[+] ADenum installed successfully!${N}"
+			echo -e "${B}[*] Creating ADenum wrapper...${N}"
+			cd
+			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT' 
+			#!/bin/bash 
+			
+			source /opt/python-env/bin/activate 
+			exec python3 /opt/ADenum/ADenum.py "\$@" 
+			EOFSCRIPT
+			chmod +x /opt/ADenum/adenum_wrapper.sh
+			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
+			echo -e "${G}[+] ADenum wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install ADenum!${N}"
+		echo "[>] Continuing..."
+	fi
+EOF	
+else
+	sudo -i bash << 'EOF'
+	cd /opt
+	git clone https://github.com/pelletierr/ADenum/
+	cd ADenum
+	apt install build-essential -y
+	apt install libsasl2-dev python3-dev libldap2-dev libssl-dev -y
+	systemctl daemon-reload
+	pip install wheel
+	pip install -r requirements.txt
+	if python ADenum.py -h; then
+			echo -e "${G}[+] ADenum installed successfully!${N}"
+			echo -e "${B}[*] Creating ADenum wrapper...${N}"
+			cd
+			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT'
+			#!/bin/bash 
+			
+			source /opt/python-env/bin/activate 
+			exec python3 /opt/ADenum/ADenum.py "\$@" 
+			EOFSCRIPT
+			chmod +x /opt/ADenum/adenum_wrapper.sh
+			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
+			echo -e "${G}[+] ADenum wrapper created!${N}
+	else
+		echo -e "${R}[-] Failed to install ADenum!${N}"
+		echo "[>] Continuing..."
+	fi	
+EOF
+fi
+
+echo -e "${B}[*] Installing gmapsapiscanner ...${N}"
+cd /opt
+sudo git clone https://github.com/ozguralp/gmapsapiscanner.git
+cd gmapsapiscanner
+if python3 maps_api_scanner.py -h; then
+	echo -e "${G}[+] gmapsapiscanner installed successfully!${N}"
+	echo -e "${B}[*] Creating gmapsapiscanner wrapper...${N}"
+	cd
+	sudo tee /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh > /dev/null << 'EOF' 
+	#!/bin/bash
+
+	exec python3 /opt/gmapsapiscanner/maps_api_scanner.py "$@"
+EOF
+	sudo chmod +x /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
+	sudo ln -s /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh /usr/local/bin/gmapsapiscanner
+	echo -e "${G}[+] gmapsapiscanner wrapper created!${N}"
+else
+	echo -e "${R}[-] Failed to install gmapsapiscanner!${N}"
+	echo "[>] Continuing..."
+fi	
+
+echo -e "${B}[*] Installing nikto...${N}"
+cd /opt
+sudo git clone https://github.com/sullo/nikto.git
+cd nikto
+sudo docker build -t sullo/nikto .
+if sudo docker run --rm sullo/nikto -Version ; then
+	echo -e "${G}[+] nikto installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install nikto!${N}"
+	echo "[>] Continuing..."
+fi	
+cd
+
+echo -e "${B}[*] Installing SecLists...${N}"
+sudo mkdir /usr/share/wordlists
+cd /usr/share/wordlists
+sudo git clone https://github.com/danielmiessler/SecLists.git
+cd
+sudo chmod 755 /usr/share/wordlists
+sudo chmod -R a+r /usr/share/wordlists
+sudo find /usr/share/wordlists -type d -exec chmod 755 {} \;
+echo -e "${G}[+] SecLists installed successfully!${N}"
+
+install_package "hashcat"
+install_package "hydra-gtk"
+
+echo -e "${B}[*] Installing sqlmap...${N}"
+sudo snap install sqlmap
+if sqlmap -h; then
+	echo -e "${G}[+] sqlmap installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install sqlmap!${N}"
+	echo "[>] Continuing..."
+fi	
+
+install_package "gobuster"
+install_package "dirb"
+install_package "hping3"
+
+echo -e "${B}[*] Installing wpscan...${N}"
+sudo apt  install ruby-rubygems -y
+sudo apt install ruby-dev -y
+sudo apt install build-essential -y
+sudo gem install wpscan
+if wpscan --version; then
+	echo -e "${G}[+] wpscan installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install wpscan!${N}"
+	echo "[>] Continuing..."
+fi
+
+echo -e "${B}[*] Installing powershell...${N}"
+sudo snap install powershell --classic
+if powershell --version; then
+	echo -e "${G}[+] powershell installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install powershell!${N}"
+	echo "[>] Continuing..."
+fi	
+
+
+install_package "john"
+install_package "cewl"
+install_package "smbmap"
+install_package "socat"
+
+echo -e "${B}[*] Installing enum4linux...${N}"
+sudo snap install enum4linux
+if enum4linux -h; then
+	echo -e "${G}[+] enum4linux installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install enum4linux!${N}"
+	echo "[>] Continuing..."
+fi
+
+install_package "screen"
+install_package "whatweb"
+install_package "sendemail" 
+
+echo -e "${B}[*] Installing gowitness...${N}"
+sudo docker pull leonjza/gowitness
+if sudo docker run --rm leonjza/gowitness gowitness; then
+	echo -e "${G}[+] gowitness installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install gowitness!${N}"
+	echo "[>] Continuing..."
+fi
+
+
+sudo mkdir /opt/whatihave
+sudo tee /opt/whatihave/whatihave.txt > /dev/null  << 'EOF' 
+
+##########################################################################################
+##                                USEFUL INFORMATION                                    ##
+##########################################################################################
+
+##########################################################################################
+## Short cuts                                                                           ##
+##########################################################################################
+## Ligolo proxy             ## sudo lg-proxy                                            ##
+## Dnschef                  ## sudo dnschef                                             ##
+## ldap-scanner             ## sudo ldapscanner                                         ## 
+## adidnsdump               ## sudo adidnsdump                                          ## 
+## ADenum                   ## sudo adenum                                              ##
+## Google Maps API Scanner  ## sudo gmapsapiscanner                                     ## 
+##########################################################################################
+
+##########################################################################################
+## Locations                                                                            ##
+##########################################################################################
+## Ligolo agent             ## /opt/ligolo-agent                                        ##
+## SecLists                 ## /usr/share/wordlist/SecLists                             ##
+##########################################################################################
+
+##########################################################################################
+## Applications running in Docker                                                       ##
+##########################################################################################
+## ManSpider                ## sudo docker run blacklanternsecurity/manspider --help    ##
+## NetExec                  ## sudo docker run netexec --help                           ##
+## Nikto                    ## sudo docker run --rm sull/nikto                          ## 
+## Gowitness                ## sudo docker run --rm leonjza/gowitness gowitness --help  ## 
+##########################################################################################
+
+## To see this message again run the command 'whatihave'...
+## To see the complete list of tools run the command `inthebelly`...
+EOF
+
+sudo chmod 644 /opt/whatihave/whatihave.txt
+sudo tee /opt/whatihave/whatihave_wrapper.sh  > /dev/null  << 'EOF' 
+#!/bin/bash
+
+exec cat /opt/whatihave/whatihave.txt
+EOF
+sudo chmod +x /opt/whatihave/whatihave_wrapper.sh 
+sudo ln -s /opt/whatihave/whatihave_wrapper.sh /usr/local/bin/whatihave
+echo "cat /opt/whatihave/whatihave.txt" | sudo tee -a /etc/bash.bashrc
+source /etc/bash.bashrc
+
+sudo mkdir /opt/inthebelly
+sudo tee /opt/inthebelly/inthebelly.txt  > /dev/null  << 'EOF' 
+
+##########################################################
+##              All installed packages                  ##
+##########################################################
+## - net-tools              ## - bloodhound-python      ##
+## - git                    ## - adidnsdump **          ##
+## - python3-venv           ## - nmap                   ##
+## - plocate                ## - ADenum **              ##
+## - apache2                ## - gmapsapiscanner **     ##
+## - go                     ## - nikto *                ##
+## - garble                 ## - SecLists ***           ##
+## - ligolo-proxy **        ## - sendemail              ##
+## - ligolo-agent ***       ## - socat                  ##
+## - curl                   ## - hashcat                ##
+## - ca-certificates        ## - hydra                  ##
+## - docker                 ## - netcat                 ##
+## - manspider *            ## - dnsdump                ##
+## - certypy-ad             ## - sqlmap                 ##
+## - netexec *              ## - gobuster               ##
+## - kerbrute               ## - dirb                   ##
+## - dnschef **             ## - hping3                 ##
+## - ldap-scanner **        ## - ruby                   ##
+## - wpscan                 ## - enum4linux             ##
+## - powershell             ## - screen                 ##
+## - john                   ## - whatweb                ##
+## - cewl                   ## - gowitness *            ##
+## - smbmap                 ##                          ##
+########################################################## 
+## *   Docker                                           ##
+## **  Shortcut                                         ##
+## *** Location                                         ##
+##########################################################
+
+## To see this message again run the command 'inthebelly'...
+## To know more about docker apps, shortcut and locations run the command `whatihave`...
+EOF
+sudo chmod 644 /opt/inthebelly/inthebelly.txt
+sudo tee /opt/inthebelly/inthebelly_wrapper.sh  > /dev/null  << 'EOF' 
+#!/bin/bash
+
+exec cat /opt/inthebelly/inthebelly.txt
+EOF
+sudo chmod +x /opt/inthebelly/inthebelly_wrapper.sh 
+sudo ln -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
+cd
+inthebelly
+
+end_time=$(date +%s)
+execution_time=$((end_time - start_time))
+echo -e "${0}"
+echo "[+] Done"
+echo "[+] Execution time: $execution_time seconds"
+echo -e "${N}"
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
