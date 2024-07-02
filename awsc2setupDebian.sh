@@ -111,6 +111,7 @@ else
 fi
 
 echo "export PATH=\$PATH:/usr/sbin:/snap/bin:/sbin" | sudo tee -a /etc/bash.bashrc
+source /etc/bash.bashrc
 
 # Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
