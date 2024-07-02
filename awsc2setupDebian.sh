@@ -97,8 +97,22 @@ echo "# Disable automatic cleanup of /tmp" | sudo tee /etc/tmpfiles.d/tmp.conf
 echo "d /tmp 1777 root root -" | sudo tee -a /etc/tmpfiles.d/tmp.conf
 echo -e "${G}[+] Done!${N}"
 
-# Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
+echo -e "${B}[*] Installing snap.${N}"
+sudo apt install snapd -y
+if snap version; then
+	echo -e "${G}[+] snap  installed successfully!${N}"
+else
+	echo -e "${R}"
+	echo "[-] Failed to install snap!"
+	echo "[-] The script can't continue."
+	echo "[-] Terminating.."
+	echo -e "${N}"
+	exit 1
+fi
 
+echo "export PATH=\$PATH:/usr/sbin:/snap/bin:/sbin" | sudo tee -a /etc/bash.bashrc
+
+# Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
 sudo apt install -y python3-venv
 if dpkg -l | grep python3-venv; then
@@ -163,8 +177,8 @@ fi
 
 cd
 
+
 sudo apt install -y net-tools
-sudo ln -s /sbin/ifconfig /usr/local/bin/ifconfig
 if dpkg -l | grep net-tools; then
 	echo -e "${G}[+] net-tools installed successfully!${N}"
 else
@@ -172,20 +186,11 @@ else
      echo "[>] Continuing..."
 fi
 
-sudo apt install -y net-tools
-sudo ln -s /sbin/ifconfig /usr/local/bin/ifconfig
-if dpkg -l | grep net-tools; then
-	echo -e "${G}[+] net-tools installed successfully!${N}"
-else
-    echo -e "${R}[-] Failed to verify net-tools installation!${N}"
-     echo "[>] Continuing..."
-fi
 install_package "git"
 install_package "plocate"
 
 
 sudo apt install apache2 -y
-sudo ln -s /usr/sbin/apache2 /usr/local/bin/apache2
 if apache2 -v; then
 	echo -e "${G}[+] apache2 web server  installed successfully!${N}"
 else
@@ -203,20 +208,7 @@ fi
 
 
 echo -e "${B}[*] Installing golang...${N}"
-sudo apt install snapd -y
-if snap version; then
-	echo -e "${G}[+] snap  installed successfully!${N}"
-else
-	echo -e "${R}"
-	echo "[-] Failed to install snap!"
-	echo "[-] The script can't continue."
-	echo "[-] Terminating.."
-	echo -e "${N}"
-	exit 1
-fi
-
 if sudo snap install go --classic; then
-	sudo ln -s /snap/go/current/bin/go /usr/local/bin/go
 	go version
 	echo -e "${G}[+] golang installed successfully!${N}"
 else
@@ -550,6 +542,15 @@ else
 	echo "[>] Continuing..."
 fi	
 
+echo -e "${B}[*] Installing rustscan ...${N}"
+sudo snap install rustscsan
+if rustscsan --version; then
+	echo -e "${G}[+]rustscsan installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install rustscsan!${N}"
+	echo "[>] Continuing..."
+fi	
+
 echo -e "${B}[*] Installing ADenum ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	sudo -i bash << 'EOF'
@@ -668,7 +669,6 @@ fi
 
 echo -e "${B}[*] Installing sqlmap...${N}"
 sudo snap install sqlmap
-sudo ln -s /snap/bin/sqlmap /usr/local/bin/sqlmap
 if sqlmap -h; then
 	echo -e "${G}[+] sqlmap installed successfully!${N}"
 else
@@ -694,7 +694,6 @@ fi
 
 echo -e "${B}[*] Installing powershell...${N}"
 sudo snap install powershell --classic
-sudo ln -s /snap/bin/powershell /usr/local/bin/powershell
 if powershell --version; then
 	echo -e "${G}[+] powershell installed successfully!${N}"
 else
@@ -710,7 +709,6 @@ install_package "socat"
 
 echo -e "${B}[*] Installing enum4linux...${N}"
 sudo snap install enum4linux
-sudo ln -s /snap/bin/enum4linux /usr/local/bin/enum4linux
 if enum4linux -h; then
 	echo -e "${G}[+] enum4linux installed successfully!${N}"
 else
