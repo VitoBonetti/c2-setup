@@ -655,10 +655,20 @@ sudo find /usr/share/wordlists -type d -exec chmod 755 {} \;
 echo -e "${G}[+] SecLists installed successfully!${N}"
 
 install_package "hashcat"
-install_package "hydra-gtk"
+
+echo -e "${B}[*] Installing hydra...${N}"
+sudo apt install hydra-gtk -y
+if hydra -h; then
+	echo -e "${G}[+] hydra installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install hydra!${N}"
+	echo "[>] Continuing..."
+fi	
+
 
 echo -e "${B}[*] Installing sqlmap...${N}"
 sudo snap install sqlmap
+sudo ln -s /snap/bin/sqlmap /usr/local/bin/sqlmap
 if sqlmap -h; then
 	echo -e "${G}[+] sqlmap installed successfully!${N}"
 else
@@ -684,6 +694,7 @@ fi
 
 echo -e "${B}[*] Installing powershell...${N}"
 sudo snap install powershell --classic
+sudo ln -s /snap/bin/powershell /usr/local/bin/powershell
 if powershell --version; then
 	echo -e "${G}[+] powershell installed successfully!${N}"
 else
@@ -699,6 +710,7 @@ install_package "socat"
 
 echo -e "${B}[*] Installing enum4linux...${N}"
 sudo snap install enum4linux
+sudo ln -s /snap/bin/enum4linux /usr/local/bin/enum4linux
 if enum4linux -h; then
 	echo -e "${G}[+] enum4linux installed successfully!${N}"
 else
