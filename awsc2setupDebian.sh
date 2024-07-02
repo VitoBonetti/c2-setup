@@ -53,17 +53,6 @@ sudo dpkg -i deb-multimedia-keyring_2016.8.1_all.deb
 echo "deb https://www.deb-multimedia.org bookworm main non-free" | sudo tee /etc/apt/sources.list.d/deb-multimedia.list
 echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/backports.list
 echo "deb http://deb.debian.org/debian unstable main contrib non-free" | sudo tee /etc/apt/sources.list.d/unstable.list
-cat << EOF | sudo tee /etc/apt/preferences.d/unstable
-Package: *
-Pin: release a=unstable
-Pin-Priority: 50
-EOF
-sudo apt update -y
-sudo apt upgrade -y
-sudo apt dist-upgrade
-cat /etc/apt/sources.list.d/deb-multimedia.list
-cat /etc/apt/sources.list.d/backports.list
-cat /etc/apt/sources.list.d/unstable.list
 sudo tee /etc/apt/preferences.d/unstable > /dev/null << 'EOF'
 Package: *
 Pin: release a=unstable
@@ -73,6 +62,15 @@ sudo tee /etc/apt/preferences.d/bookworm > /dev/null << 'EOF'
 Package: *
 Pin: release a=bookworm
 Pin-Priority: 900
+EOF
+
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt dist-upgrade
+cat /etc/apt/sources.list.d/deb-multimedia.list
+cat /etc/apt/sources.list.d/backports.list
+cat /etc/apt/sources.list.d/unstable.list
+
 cat /etc/apt/sources.list.d/*
 apt list --upgradable
 echo -e "${G}[+] Package sources update successfully!${N}"
