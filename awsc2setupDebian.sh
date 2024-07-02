@@ -44,7 +44,7 @@ start_time=$(date +%s)
 echo -e "${O}"
 echo "[+] AWS - C2 SETUP"
 echo "[*] Starting the process..."
-echo -e "${N}
+echo -e "${N}"
 echo -e "${B}[*] Updating Package sources${N}"
 
 # Update package source
