@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Declaring the colors
 G='\033[0;32m'
 B='\033[0;34m'
@@ -64,9 +63,11 @@ Pin: release a=bookworm
 Pin-Priority: 900
 EOF
 
+echo -e "${B}[*] Updating the system...${N}"
 sudo apt update -y
-sudo apt upgrade -y
+echo -e "${B}[*] Upgrading the system...${N}"
 sudo apt dist-upgrade
+sudo apt upgrade -y
 cat /etc/apt/sources.list.d/deb-multimedia.list
 cat /etc/apt/sources.list.d/backports.list
 cat /etc/apt/sources.list.d/unstable.list
@@ -74,20 +75,6 @@ cat /etc/apt/sources.list.d/unstable.list
 cat /etc/apt/sources.list.d/*
 apt list --upgradable
 echo -e "${G}[+] Package sources update successfully!${N}"
-
-echo -e "${B}[*] Updating the system...${N}"
-if sudo apt update -y; then
-	echo -e "${G}[+] System update successfully!${N}"
-else
-	echo -e "${R}[-] Failed to update the system!${N}"
-fi
-
-echo -e "${B}[*] Upgrading the system...${N}"
-if sudo apt upgrade -y; then
-	echo -e "${G}[+] System upgraded successfully!${N}"
-else
-	echo -e "$[-] {R}Failed to upgrade the system!${N}"
-fi
 
 # Create persistence on the /tmp folder
 
@@ -112,7 +99,8 @@ fi
 
 echo "export PATH=\$PATH:/usr/sbin:/snap/bin:/sbin" | sudo tee -a /etc/bash.bashrc
 source /etc/bash.bashrc
-
+echo $PATH
+cd
 # Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
 sudo apt install -y python3-venv
@@ -178,7 +166,6 @@ fi
 
 cd
 
-
 sudo apt install -y net-tools
 if dpkg -l | grep net-tools; then
 	echo -e "${G}[+] net-tools installed successfully!${N}"
@@ -189,7 +176,6 @@ fi
 
 install_package "git"
 install_package "plocate"
-
 
 sudo apt install apache2 -y
 if apache2 -v; then
@@ -206,7 +192,6 @@ else
 	echo -e "${R}[-] Failed to start apache2 web server!${N}"
 	echo "[>] Continuing..."
 fi
-
 
 echo -e "${B}[*] Installing golang...${N}"
 if sudo snap install go --classic; then
@@ -328,6 +313,7 @@ else
 	echo -e "${R}[-] Failed to install netexec!${N}"
 	echo "[>] Continuing..."
 fi
+
 cd
 
 echo -e "${B}[*] Installing kerbrute...${N}"
@@ -378,7 +364,8 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install dnschef!${N}"
 		echo "[>] Continuing..."
 	fi
-EOF	
+EOF
+
 else
 	sudo -i bash  << 'EOF'
 	cd /opt
@@ -403,7 +390,8 @@ else
 		echo -e "${R}[-] Failed to install dnschef!${N}"
 		echo "[>] Continuing..."
 	fi
-EOF	
+EOF
+
 fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
@@ -433,7 +421,8 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
 		echo "[>] Continuing..."
 	fi
-EOF	
+EOF
+
 else
 	sudo -i bash << 'EOF'
 	cd /opt
@@ -460,6 +449,7 @@ else
 		echo "[>] Continuing..."
 	fi	
 EOF
+
 fi
 
 echo -e "${B}[*] Installing bloodhound...${N}"
@@ -507,7 +497,8 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
 	fi
-EOF	
+EOF
+
 else
 	sudo -i bash << 'EOF'
 	cd /opt
@@ -532,6 +523,7 @@ else
 		echo "[>] Continuing..."
 	fi	
 EOF
+
 fi
 
 echo -e "${B}[*] Installing nmap ...${N}"
@@ -581,7 +573,8 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
 	fi
-EOF	
+EOF
+
 else
 	sudo -i bash << 'EOF'
 	cd /opt
@@ -610,6 +603,7 @@ else
 		echo "[>] Continuing..."
 	fi	
 EOF
+
 fi
 
 echo -e "${B}[*] Installing gmapsapiscanner ...${N}"
@@ -643,7 +637,8 @@ if sudo docker run --rm sullo/nikto -Version ; then
 else
 	echo -e "${R}[-] Failed to install nikto!${N}"
 	echo "[>] Continuing..."
-fi	
+fi
+
 cd
 
 echo -e "${B}[*] Installing SecLists...${N}"
@@ -808,7 +803,7 @@ sudo tee /opt/inthebelly/inthebelly.txt  > /dev/null  << 'EOF'
 ## - powershell             ## - screen                 ##
 ## - john                   ## - whatweb                ##
 ## - cewl                   ## - gowitness *            ##
-## - smbmap                 ##                          ##
+## - smbmap                 ## - rustscan               ##
 ########################################################## 
 ## *   Docker                                           ##
 ## **  Shortcut                                         ##
