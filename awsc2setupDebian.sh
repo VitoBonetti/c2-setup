@@ -97,10 +97,10 @@ else
 	exit 1
 fi
 
-echo "export PATH=\$PATH:/usr/sbin:/snap/bin:/sbin" | sudo tee -a /etc/bash.bashrc
+echo "export PATH=\$PATH:/usr/sbin:/snap/bin:/sbin:/usr/bin/snap" | sudo tee -a /etc/bash.bashrc
 
 # Directly export the PATH in the script so the script can continue and complete
-export PATH=$PATH:/usr/sbin:/snap/bin:/sbin
+export PATH=$PATH:/usr/sbin:/snap/bin:/sbin:/usr/bin/snap
 echo $PATH
 cd
 
@@ -180,6 +180,7 @@ fi
 install_package "git"
 install_package "plocate"
 
+echo -e "${B}[*] Installing apache2 web server...${N}
 sudo apt install apache2 -y
 if apache2 -v; then
 	echo -e "${G}[+] apache2 web server  installed successfully!${N}"
