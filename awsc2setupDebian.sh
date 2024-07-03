@@ -180,7 +180,7 @@ fi
 install_package "git"
 install_package "plocate"
 
-echo -e "${B}[*] Installing apache2 web server...${N}
+echo -e "${B}[*] Installing apache2 web server...${N}"
 sudo apt install apache2 -y
 if apache2 -v; then
 	echo -e "${G}[+] apache2 web server  installed successfully!${N}"
