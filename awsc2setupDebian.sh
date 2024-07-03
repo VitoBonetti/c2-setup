@@ -721,6 +721,23 @@ fi
 install_package "screen"
 install_package "whatweb"
 install_package "sendemail" 
+install_package "unzip"
+
+echo -e "${B}[*] Installing wine...${N}"
+dpkg --print-architecture
+sudo dpkg --add-architecture i386
+dpkg --print-foreign-architectures
+sudo mkdir -pm755 /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
+sudo apt update -y
+sudo apt install --install-recommends winehq-stable -y
+if wine --version; then
+	echo -e "${G}[+] wine installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install wine!${N}"
+	echo "[>] Continuing..."
+fi
 
 echo -e "${B}[*] Installing gowitness...${N}"
 sudo docker pull leonjza/gowitness
@@ -810,6 +827,7 @@ sudo tee /opt/inthebelly/inthebelly.txt  > /dev/null  << 'EOF'
 ## - john                   ## - whatweb                ##
 ## - cewl                   ## - gowitness *            ##
 ## - smbmap                 ## - rustscan               ##
+## - unzip   		    ## - wine			##
 ########################################################## 
 ## *   Docker                                           ##
 ## **  Shortcut                                         ##
