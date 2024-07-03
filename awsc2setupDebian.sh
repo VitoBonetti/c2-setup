@@ -218,11 +218,13 @@ else
 	echo "[>] Continuing..."
 fi
 
+GO_PATH="/snap/bin/go"
+
 echo -e "${B}[*] Installing ligolo proxy...${N}"
 cd /opt
 sudo git clone https://github.com/0x00-0x00/ligolo-ng
 cd ligolo-ng
-sudo go build -o proxy cmd/proxy/main.go
+sudo -E ${GO_PATH} build -o proxy cmd/proxy/main.go
 cd
 sudo ln -s /opt/ligolo-ng/proxy /usr/local/bin/lg-proxy
 if lg-proxy -h; then
