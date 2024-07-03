@@ -66,7 +66,7 @@ EOF
 echo -e "${B}[*] Updating the system...${N}"
 sudo apt update -y
 echo -e "${B}[*] Upgrading the system...${N}"
-sudo apt dist-upgrade
+sudo apt dist-upgrade -y
 sudo apt upgrade -y
 cat /etc/apt/sources.list.d/deb-multimedia.list
 cat /etc/apt/sources.list.d/backports.list
@@ -98,9 +98,12 @@ else
 fi
 
 echo "export PATH=\$PATH:/usr/sbin:/snap/bin:/sbin" | sudo tee -a /etc/bash.bashrc
-source /etc/bash.bashrc
+
+# Directly export the PATH in the script so the script can continue and complete
+export PATH=$PATH:/usr/sbin:/snap/bin:/sbin
 echo $PATH
 cd
+
 # Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
 
 sudo apt install -y python3-venv
