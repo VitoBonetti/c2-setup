@@ -543,7 +543,7 @@ fi
 
 echo -e "${B}[*] Installing rustscan ...${N}"
 sudo snap install rustscan
-if rustscsan --version; then
+if rustscan --version; then
 	echo -e "${G}[+]rustscsan installed successfully!${N}"
 else
 	echo -e "${R}[-] Failed to install rustscsan!${N}"
@@ -661,7 +661,7 @@ install_package "hashcat"
 
 echo -e "${B}[*] Installing hydra...${N}"
 sudo apt install hydra-gtk -y
-if hydra -h; then
+if dpkg -s hydra; then
 	echo -e "${G}[+] hydra installed successfully!${N}"
 else
 	echo -e "${R}[-] Failed to install hydra!${N}"
