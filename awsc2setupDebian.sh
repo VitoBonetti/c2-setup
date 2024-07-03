@@ -542,7 +542,7 @@ else
 fi	
 
 echo -e "${B}[*] Installing rustscan ...${N}"
-sudo snap install rustscsan
+sudo snap install rustscan
 if rustscsan --version; then
 	echo -e "${G}[+]rustscsan installed successfully!${N}"
 else
