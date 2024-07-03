@@ -16,15 +16,15 @@ is_installed() {
 	dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -q "ok installed" 
 }
 
-# Function to install a package if not already installed
+# Function to install a package if not already installed - APT
 install_package() {
     local package=$1
     echo -e "${B}[*] Installing ${package}...${N}"
-    if is_installed "${package}"; then
+    if dpkg -s "${package}" > /dev/null 2>&1; then
         echo -e "${G}[+] ${package} is already installed!${N}"
     else
         if sudo apt install -y "${package}"; then
-            if command -v "${package}" &> /dev/null; then
+            if dpkg -s "${package}" > /dev/null 2>&1; then
                 echo -e "${G}[+] ${package} installed successfully!${N}"
             else
                 echo -e "${R}[-] Failed to verify ${package} installation!${N}"
@@ -35,6 +35,28 @@ install_package() {
             echo "[>] Continuing..."
         fi
     fi
+}
+
+# Function to install a package if not already installed - SNAP
+install_snap() {
+    local package=$1
+    echo -e "${B}[*] Installing ${package}...${N}"
+    if snap list | grep "$package" > /dev/null 2>&1; then
+        echo -e "${G}[+] ${package} is already installed!${N}"
+    else
+         if sudo snap install "${package}"; then
+            if  snap list | grep "$package" > /dev/null 2>&1; then
+                echo -e "${G}[+] ${package} installed successfully!${N}"
+            else
+                echo -e "${R}[-] Failed to verify ${package} installation!${N}"
+                echo "[>] Continuing..."
+            fi
+        else
+            echo -e "${R}[-] Failed to install ${package}!${N}"
+            echo "[>] Continuing..."
+        fi
+    fi
+    
 }
 
 # starting the script
@@ -105,14 +127,8 @@ echo $PATH
 cd
 
 # Install Python virtual environment and create 2 enviroment, high and low privilage in the /opt and /tmp folder
+install_package "python3-venv"
 
-sudo apt install -y python3-venv
-if dpkg -l | grep python3-venv; then
-	echo -e "${G}[+] python3-venv installed successfully!${N}"
-else
-    echo -e "${R}[-] Failed to verify python3-venv installation!${N}"
-     echo "[>] Continuing..."
-fi
 echo -e "${B}[*] Creating 2 Python virtual environments.${N}"
 echo -e "${Y}[^] /opt/python-venv  --> High Privilages${N}"
 echo -e "${Y}[=] /tmp/python-venv  --> Low  Privilages${N}"
@@ -169,25 +185,10 @@ fi
 
 cd
 
-sudo apt install -y net-tools
-if dpkg -l | grep net-tools; then
-	echo -e "${G}[+] net-tools installed successfully!${N}"
-else
-    echo -e "${R}[-] Failed to verify net-tools installation!${N}"
-     echo "[>] Continuing..."
-fi
-
+install_package "net-tools"
 install_package "git"
 install_package "plocate"
-
-echo -e "${B}[*] Installing apache2 web server...${N}"
-sudo apt install apache2 -y
-if apache2 -v; then
-	echo -e "${G}[+] apache2 web server  installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to verify apache2 web server installation!${N}"
-	echo "[>] Continuing..."
-fi
+install_package "apache2"
 
 sudo systemctl start apache2
 if sudo systemctl is-active --quiet apache2; then
@@ -532,23 +533,8 @@ EOF
 
 fi
 
-echo -e "${B}[*] Installing nmap ...${N}"
-sudo snap install nmap
-if nmap --version; then
-	echo -e "${G}[+]nmap installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install nmap!${N}"
-	echo "[>] Continuing..."
-fi	
-
-echo -e "${B}[*] Installing rustscan ...${N}"
-sudo snap install rustscan
-if rustscan --version; then
-	echo -e "${G}[+]rustscsan installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install rustscsan!${N}"
-	echo "[>] Continuing..."
-fi	
+install_snap "nmap"
+install_snap "rustscan	
 
 echo -e "${B}[*] Installing ADenum ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
@@ -658,29 +644,13 @@ sudo find /usr/share/wordlists -type d -exec chmod 755 {} \;
 echo -e "${G}[+] SecLists installed successfully!${N}"
 
 install_package "hashcat"
-
-echo -e "${B}[*] Installing hydra...${N}"
-sudo apt install hydra-gtk -y
-if dpkg -s hydra; then
-	echo -e "${G}[+] hydra installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install hydra!${N}"
-	echo "[>] Continuing..."
-fi	
-
-
-echo -e "${B}[*] Installing sqlmap...${N}"
-sudo snap install sqlmap
-if sqlmap -h; then
-	echo -e "${G}[+] sqlmap installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install sqlmap!${N}"
-	echo "[>] Continuing..."
-fi	
-
+install_package "hydra-gtk"
+install_snap "sqlmap"	
 install_package "gobuster"
 install_package "dirb"
 install_package "hping3"
+install_snap "powershell"	
+install_snap "enum4linux"	
 
 echo -e "${B}[*] Installing wpscan...${N}"
 sudo apt  install ruby-rubygems -y
@@ -694,30 +664,10 @@ else
 	echo "[>] Continuing..."
 fi
 
-echo -e "${B}[*] Installing powershell...${N}"
-sudo snap install powershell --classic
-if powershell --version; then
-	echo -e "${G}[+] powershell installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install powershell!${N}"
-	echo "[>] Continuing..."
-fi	
-
-
 install_package "john"
 install_package "cewl"
 install_package "smbmap"
 install_package "socat"
-
-echo -e "${B}[*] Installing enum4linux...${N}"
-sudo snap install enum4linux
-if enum4linux -h; then
-	echo -e "${G}[+] enum4linux installed successfully!${N}"
-else
-	echo -e "${R}[-] Failed to install enum4linux!${N}"
-	echo "[>] Continuing..."
-fi
-
 install_package "screen"
 install_package "whatweb"
 install_package "sendemail" 
