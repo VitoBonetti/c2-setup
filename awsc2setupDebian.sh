@@ -361,7 +361,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
 		#!/bin/bash 
 		
-		source /opt/python-env/bin/activate 
+		source /opt/python-venv/bin/activate 
 		exec /opt/dnschef/dnschef.py "\$@" 
 		EOFSCRIPT
 		chmod +x /opt/dnschef/dnschef_wrapper.sh
@@ -386,7 +386,7 @@ else
 		tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
-		source /opt/python-env/bin/activate 
+		source /opt/python-venv/bin/activate 
 		exec /opt/dnschef/dnschef.py "\$@" 
 		EOFSCRIPT
 		
@@ -418,7 +418,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
-		source /opt/python-env/bin/activate 
+		source /opt/python-venv/bin/activate 
 		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
 		EOFSCRIPT
 		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
@@ -445,7 +445,7 @@ else
 		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
-		source /opt/python-env/bin/activate 
+		source /opt/python-venv/bin/activate 
 		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
 		EOFSCRIPT
 		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
@@ -483,7 +483,7 @@ echo -e "${B}[*] Installing adidnsdump ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 	sudo -i bash << 'EOF'
 	cd /opt
-	source python-env/bin/activate
+	source python-venv/bin/activate
 	git clone https://github.com/dirkjanm/adidnsdump 
 	cd adidnsdump
 	pip install . 
@@ -494,7 +494,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		tee /opt/adidnsdump/adidnsdump_wrapper.sh >/dev/null << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
-		source /opt/python-env/bin/activate 
+		source /opt/python-venv/bin/activate 
 		exec adidnsdump "\$@" 
 		EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
@@ -519,7 +519,7 @@ else
 		tee /opt/adidnsdump/adidnsdump_wrapper.sh > /dev/null << 'EOFSCRIPT' 
 		#!/bin/bash 
 		
-		source /opt/python-env/bin/activate 
+		source /opt/python-venv/bin/activate 
 		exec adidnsdump "\$@" 
 		EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
@@ -537,10 +537,10 @@ install_snap "nmap"
 install_snap "rustscan"	
 
 echo -e "${B}[*] Installing ADenum ...${N}"
-if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
 	sudo -i bash << 'EOF'
 	cd /opt
-	source python-env/bin/activate 
+	source /opt/python-venv/bin/activate 
 	git clone https://github.com/pelletierr/ADenum/
 	cd ADenum
 	apt install build-essential -y
@@ -555,7 +555,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT' 
 			#!/bin/bash 
 			
-			source /opt/python-env/bin/activate 
+			source /opt/python-venv/bin/activate 
 			exec python3 /opt/ADenum/ADenum.py "\$@" 
 			EOFSCRIPT
 			chmod +x /opt/ADenum/adenum_wrapper.sh
@@ -584,7 +584,7 @@ else
 			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT'
 			#!/bin/bash 
 			
-			source /opt/python-env/bin/activate 
+			source /opt/python-venv/bin/activate 
 			exec python3 /opt/ADenum/ADenum.py "\$@" 
 			EOFSCRIPT
 			chmod +x /opt/ADenum/adenum_wrapper.sh
