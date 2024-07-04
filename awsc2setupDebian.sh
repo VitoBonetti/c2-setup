@@ -71,9 +71,9 @@ echo -e "${B}[*] Updating Package sources${N}"
 # Update package source
 wget http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb
 sudo dpkg -i deb-multimedia-keyring_2016.8.1_all.deb
-echo "deb https://www.deb-multimedia.org bookworm main non-free" | sudo tee /etc/apt/sources.list.d/deb-multimedia.list
-echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/backports.list
-echo "deb http://deb.debian.org/debian unstable main contrib non-free" | sudo tee /etc/apt/sources.list.d/unstable.list
+echo "deb https://www.deb-multimedia.org bookworm main non-free non-free-firmware" | sudo tee /etc/apt/sources.list.d/deb-multimedia.list
+echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-free-firmware" | sudo tee /etc/apt/sources.list.d/backports.list
+echo "deb http://deb.debian.org/debian unstable main contrib non-free non-free-firmware" | sudo tee /etc/apt/sources.list.d/unstable.list
 sudo tee /etc/apt/preferences.d/unstable > /dev/null << 'EOF'
 Package: *
 Pin: release a=unstable
