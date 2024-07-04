@@ -549,18 +549,18 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
 	pip install wheel
 	pip install -r requirements.txt
 	if python ADenum.py -h; then
-			echo -e "${G}[+] ADenum installed successfully!${N}"
-			echo -e "${B}[*] Creating ADenum wrapper...${N}"
-			cd
-			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT' 
-			#!/bin/bash 
-			
-			source /opt/python-venv/bin/activate 
-			exec python3 /opt/ADenum/ADenum.py "\$@" 
-			EOFSCRIPT
-			chmod +x /opt/ADenum/adenum_wrapper.sh
-			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
-			echo -e "${G}[+] ADenum wrapper created!${N}"
+ 		echo -e "${G}[+] ADenum installed successfully!${N}"
+		echo -e "${B}[*] Creating ADenum wrapper...${N}"
+		cd
+		tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT' 
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec python3 /opt/ADenum/ADenum.py "\$@" 
+EOFSCRIPT
+		chmod +x /opt/ADenum/adenum_wrapper.sh
+		ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
+		echo -e "${G}[+] ADenum wrapper created!${N}"
 	else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
@@ -578,18 +578,18 @@ else
 	pip install wheel
 	pip install -r requirements.txt
 	if python ADenum.py -h; then
-			echo -e "${G}[+] ADenum installed successfully!${N}"
-			echo -e "${B}[*] Creating ADenum wrapper...${N}"
-			cd
-			tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT'
-			#!/bin/bash 
-			
-			source /opt/python-venv/bin/activate 
-			exec python3 /opt/ADenum/ADenum.py "\$@" 
-			EOFSCRIPT
-			chmod +x /opt/ADenum/adenum_wrapper.sh
-			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
-			echo -e "${G}[+] ADenum wrapper created!${N}"
+		echo -e "${G}[+] ADenum installed successfully!${N}"
+		echo -e "${B}[*] Creating ADenum wrapper...${N}"
+		cd
+		tee /opt/ADenum/adenum_wrapper.sh > /dev/null << 'EOFSCRIPT'
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec python3 /opt/ADenum/ADenum.py "\$@" 
+EOFSCRIPT
+		chmod +x /opt/ADenum/adenum_wrapper.sh
+		ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
+		echo -e "${G}[+] ADenum wrapper created!${N}"
 	else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
