@@ -534,7 +534,7 @@ EOF
 fi
 
 install_snap "nmap"
-install_snap "rustscan	
+install_snap "rustscan"	
 
 echo -e "${B}[*] Installing ADenum ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
@@ -560,7 +560,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 			EOFSCRIPT
 			chmod +x /opt/ADenum/adenum_wrapper.sh
 			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
-			echo -e "${G}[+] ADenum wrapper created!${N}
+			echo -e "${G}[+] ADenum wrapper created!${N}"
 	else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
@@ -589,7 +589,7 @@ else
 			EOFSCRIPT
 			chmod +x /opt/ADenum/adenum_wrapper.sh
 			ln -s /opt/ADenum/adenum_wrapper.sh /usr/local/bin/adenum
-			echo -e "${G}[+] ADenum wrapper created!${N}
+			echo -e "${G}[+] ADenum wrapper created!${N}"
 	else
 		echo -e "${R}[-] Failed to install ADenum!${N}"
 		echo "[>] Continuing..."
