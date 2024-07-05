@@ -496,7 +496,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		
 		source /opt/python-venv/bin/activate 
 		exec adidnsdump "\$@" 
-		EOFSCRIPT
+EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
 		echo -e "${G}[+] adidnsdump wrapper created!${N}"
@@ -521,7 +521,7 @@ else
 		
 		source /opt/python-venv/bin/activate 
 		exec adidnsdump "\$@" 
-		EOFSCRIPT
+EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
 		echo -e "${G}[+] adidnsdump wrapper created!${N}"
