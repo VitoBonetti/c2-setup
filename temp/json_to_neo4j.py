@@ -24,7 +24,9 @@ def create_nodes_and_relationships(tx, nodes, relationships):
         SET n += $properties
         """
         # Execute the query with the node's object ID and properties
-        tx.run(query, objectid=node['objectid'], properties=node['properties'])
+        logger.info(f"Executing query for node: {query} with params {node['objectid']}, {node['properties']}")
+        result = tx.run(query, objectid=node['objectid'], properties=node['properties'])
+        logger.info(f"Result: {result.consume()}")
     
     # Create relationships
     for relationship in relationships:
@@ -36,7 +38,9 @@ def create_nodes_and_relationships(tx, nodes, relationships):
         SET r += $properties
         """
         # Execute the query with the relationship's start ID, end ID, type, and properties
-        tx.run(query, startid=relationship['startid'], endid=relationship['endid'], type=relationship['type'], properties=relationship['properties'])
+        logger.info(f"Executing query for relationship: {query} with params {relationship['startid']}, {relationship['endid']}, {relationship['type']}, {relationship['properties']}")
+        result = tx.run(query, startid=relationship['startid'], endid=relationship['endid'], type=relationship['type'], properties=relationship['properties'])
+        logger.info(f"Result: {result.consume()}")
 
 def upload_json_to_neo4j(json_file):
     # Function to upload JSON data to Neo4j
