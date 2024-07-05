@@ -3,14 +3,14 @@ import os
 import json
 import logging
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Set up logging to print to console
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # Neo4j connection details
 neo4j_uri = "bolt://localhost:7687"
 neo4j_user = "neo4j"
-neo4j_password = "neo4j"
+neo4j_password = "password"
 
 # Initialize the Neo4j driver
 driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
