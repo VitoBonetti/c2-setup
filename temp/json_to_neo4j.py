@@ -1,6 +1,11 @@
 from neo4j import GraphDatabase
 import os
 import json
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Neo4j connection details
 neo4j_uri = "bolt://localhost:7687"
@@ -46,10 +51,10 @@ def upload_json_to_neo4j(json_file):
     
     # Open a session and write the data to Neo4j
     with driver.session() as session:
-        session.write_transaction(create_nodes_and_relationships, nodes, relationships)
+        session.execute_write(create_nodes_and_relationships, nodes, relationships)
 
 # Path to the directory containing the extracted JSON files. YOU MUST CHANGE THIS
-extracted_path = "/json/files/location/"  
+extracted_path = "/home/admin/bloodhound/"  
 
 # Loop through each JSON file in the directory
 for file_name in os.listdir(extracted_path):
