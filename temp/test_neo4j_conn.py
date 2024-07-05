@@ -10,7 +10,7 @@ driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
 
 def test_connection():
     with driver.session() as session:
-        result = session.run("RETURN 'Connection successful' AS message")
+        result = session.run("RETURN '[+] Connection successful' AS message")
         for record in result:
             print(record["message"])
 
