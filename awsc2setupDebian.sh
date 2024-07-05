@@ -499,7 +499,7 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
-		echo -e "${G}[+] adidnsdump wrapper created!${N}
+		echo -e "${G}[+] adidnsdump wrapper created!${N}"
 	else
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
@@ -524,7 +524,7 @@ else
 		EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
-		echo -e "${G}[+] adidnsdump wrapper created!${N}
+		echo -e "${G}[+] adidnsdump wrapper created!${N}"
 	else
 		echo -e "${R}[-] Failed to install adidnsdump!${N}"
 		echo "[>] Continuing..."
