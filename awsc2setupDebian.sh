@@ -648,9 +648,25 @@ install_package "hydra-gtk"
 install_snap "sqlmap"	
 install_package "gobuster"
 install_package "dirb"
-install_package "hping3"
-install_snap "powershell"	
+install_package "hping3"	
 install_snap "enum4linux"	
+
+echo -e "${B}[*] Installing powershell...${N}"
+if snap list | grep powershell > /dev/null 2>&1; then
+        echo -e "${G}[+] powershell is already installed!${N}"
+    else
+         if sudo snap install powershell --classic; then
+            if  snap list | grep powershell > /dev/null 2>&1; then
+                echo -e "${G}[+] powershell installed successfully!${N}"
+            else
+                echo -e "${R}[-] Failed to verify powershell installation!${N}"
+                echo "[>] Continuing..."
+            fi
+        else
+            echo -e "${R}[-] Failed to install powershell!${N}"
+            echo "[>] Continuing..."
+        fi
+    fi
 
 echo -e "${B}[*] Installing wpscan...${N}"
 sudo apt  install ruby-rubygems -y
