@@ -37,3 +37,6 @@ When the script is done update the ***/etc/profile*** and the ***/etc/bash.bashr
 source /etc/profile
 source /etc/bash.bashrc
 ```
+#### Knows issues
+
+- some shortcuts do not probably works.
