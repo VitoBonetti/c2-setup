@@ -240,7 +240,7 @@ else
 	echo "[>] Continuing..."
 fi
 
-# GO_PATH="/snap/bin/go"
+GO_PATH="/snap/bin/go"
 
 echo -e "${B}[*] Installing ligolo proxy...${N}"
 cd /opt
