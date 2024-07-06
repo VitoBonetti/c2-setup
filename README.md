@@ -39,4 +39,4 @@ source /etc/bash.bashrc
 ```
 #### Knows issues
 
-- some shortcuts do not probably works.
+- some shortcuts do not probably work.
