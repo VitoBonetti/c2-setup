@@ -813,6 +813,8 @@ sudo chmod +x /opt/inthebelly/inthebelly_wrapper.sh
 sudo ln -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
 cd
 inthebelly
+sudo updatedb
+source /etc/bash.bashrc
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
