@@ -211,6 +211,27 @@ else
 	exit 1
 fi
 
+echo -e "${B}Updating Go PATH...${N}"
+
+# Add Go binary path to /etc/profile
+echo 'if [ -d "/snap/bin" ]; then' | sudo tee -a /etc/profile
+echo '    export PATH=$PATH:/snap/bin' | sudo tee -a /etc/profile
+echo 'fi' | sudo tee -a /etc/profile
+
+# Add Go binary path to /etc/bash.bashrc
+echo 'if [ -d "/snap/bin" ]; then' | sudo tee -a /etc/bash.bashrc
+echo '    export PATH=$PATH:/snap/bin' | sudo tee -a /etc/bash.bashrc
+echo 'fi' | sudo tee -a /etc/bash.bashrc
+
+# Update sudoers secure_path
+sudo sed -i 's|Defaults\s*secure_path="[^"]*|Defaults secure_path="/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/sbin:/snap/bin:/sbin:/usr/bin/snap|' /etc/sudoers
+
+# Source the profiles to apply changes
+source /etc/profile
+source /etc/bash.bashrc
+
+echo -e "${G}Go PATH update successfully!${N}"
+
 echo -e "${B}[*] Installing garble...${N}"
 if go install mvdan.cc/garble@master; then
 	echo -e "${G}[+] garble installed successfully!${N}"
@@ -219,7 +240,7 @@ else
 	echo "[>] Continuing..."
 fi
 
-GO_PATH="/snap/bin/go"
+# GO_PATH="/snap/bin/go"
 
 echo -e "${B}[*] Installing ligolo proxy...${N}"
 cd /opt
