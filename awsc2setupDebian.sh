@@ -380,11 +380,11 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		chmod +x dnschef.py
 		cd
 		tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
-		#!/bin/bash 
-		
-		source /opt/python-venv/bin/activate 
-		exec /opt/dnschef/dnschef.py "\$@" 
-		EOFSCRIPT
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec /opt/dnschef/dnschef.py "\$@" 
+EOFSCRIPT
 		chmod +x /opt/dnschef/dnschef_wrapper.sh
 		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
 		echo -e "${G}[+] dnschef wrapper created!${N}
@@ -405,11 +405,11 @@ else
 		chmod +x dnschef.py
 		cd
 		tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOFSCRIPT' 
-		#!/bin/bash 
-		
-		source /opt/python-venv/bin/activate 
-		exec /opt/dnschef/dnschef.py "\$@" 
-		EOFSCRIPT
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec /opt/dnschef/dnschef.py "\$@" 
+EOFSCRIPT
 		
 		chmod +x /opt/dnschef/dnschef_wrapper.sh
 		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
@@ -437,11 +437,11 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		chmod +x ldap-scanner.py
 		cd
 		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
-		#!/bin/bash 
-		
-		source /opt/python-venv/bin/activate 
-		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
-		EOFSCRIPT
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
+EOFSCRIPT
 		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
 		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
 		echo -e "${G}[+] ldap-scanner wrapper created!${N}
@@ -464,11 +464,11 @@ else
 		chmod +x ldap-scanner.py
 		cd
 		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
-		#!/bin/bash 
-		
-		source /opt/python-venv/bin/activate 
-		exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
-		EOFSCRIPT
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
+EOFSCRIPT
 		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
 		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
 		echo -e "${G}[+] ldap-scanner wrapper created!${N}
@@ -513,10 +513,10 @@ if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
 		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
 		cd
 		tee /opt/adidnsdump/adidnsdump_wrapper.sh >/dev/null << 'EOFSCRIPT' 
-		#!/bin/bash 
-		
-		source /opt/python-venv/bin/activate 
-		exec adidnsdump "\$@" 
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec adidnsdump "\$@" 
 EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
@@ -538,10 +538,10 @@ else
 		echo -e "${B}[*] Creating adidnsdump wrapper...${N}"
 		cd
 		tee /opt/adidnsdump/adidnsdump_wrapper.sh > /dev/null << 'EOFSCRIPT' 
-		#!/bin/bash 
-		
-		source /opt/python-venv/bin/activate 
-		exec adidnsdump "\$@" 
+#!/bin/bash 
+
+source /opt/python-venv/bin/activate 
+exec adidnsdump "\$@" 
 EOFSCRIPT
 		chmod +x /opt/adidnsdump/adidnsdump_wrapper.sh
 		ln -s /opt/adidnsdump/adidnsdump_wrapper.sh /usr/local/bin/adidnsdump
@@ -628,9 +628,9 @@ if python3 maps_api_scanner.py -h; then
 	echo -e "${B}[*] Creating gmapsapiscanner wrapper...${N}"
 	cd
 	sudo tee /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh > /dev/null << 'EOF' 
-	#!/bin/bash
+#!/bin/bash
 
-	exec python3 /opt/gmapsapiscanner/maps_api_scanner.py "$@"
+exec python3 /opt/gmapsapiscanner/maps_api_scanner.py "$@"
 EOF
 	sudo chmod +x /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh
 	sudo ln -s /opt/gmapsapiscanner/gmapsapiscanner_wrapper.sh /usr/local/bin/gmapsapiscanner
