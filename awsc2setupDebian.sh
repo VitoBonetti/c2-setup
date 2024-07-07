@@ -318,8 +318,8 @@ else
 fi
 
 echo -e "${B}[*] Installing certipy-ad...${N}"
-if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
-	source /tmp/python-ven/bin/activate
+if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
+	source /tmp/python-venv/bin/activate
 	pip install wheel
 	pip install lxml==4.9.3
 	pip install certipy-ad
@@ -345,8 +345,8 @@ fi
 cd
 
 echo -e "${B}[*] Installing kerbrute...${N}"
-if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
-	source /tmp/python-ven/bin/activate
+if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
+	source /tmp/python-venv/bin/activate
 	pip install kerbrute
 	pip install --upgrade setuptools
 	if kerbrute --help; then
@@ -367,9 +367,9 @@ else
 fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
-if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
 	sudo -i bash << 'EOF'
-	source /opt/python-ven/bin/activate
+	source /opt/python-venv/bin/activate
 	cd /opt
 	git clone https://github.com/iphelix/dnschef.git
 	cd dnschef
@@ -423,9 +423,9 @@ EOF
 fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
-if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
 	sudo -i bash<< 'EOF'
-	source /opt/python-ven/bin/activate
+	source /opt/python-venv/bin/activate
 	cd /opt
 	git clone https://github.com/GoSecure/ldap-scanner.git 
 	cd ldap-scanner
@@ -481,8 +481,8 @@ EOF
 fi
 
 echo -e "${B}[*] Installing bloodhound...${N}"
-if [[ "$VIRTUAL_ENV" != "/tmp/python-ven" ]]; then
-	source /tmp/python-ven/bin/activate
+if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
+	source /tmp/python-venv/bin/activate
 	pip install bloodhound 
 	if bloodhound-python --help; then
 		echo -e "${G}[+]bloodhound installed successfully!${N}"
@@ -501,7 +501,7 @@ else
 fi
 
 echo -e "${B}[*] Installing adidnsdump ...${N}"
-if [[ "$VIRTUAL_ENV" != "/opt/python-ven" ]]; then
+if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
 	sudo -i bash << 'EOF'
 	cd /opt
 	source python-venv/bin/activate
