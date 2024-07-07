@@ -368,117 +368,117 @@ fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
-	sudo -i bash << 'EOF'
-	source /opt/python-venv/bin/activate
-	cd /opt
-	git clone https://github.com/iphelix/dnschef.git
-	cd dnschef
-	pip install -r requirements.txt 
-	if python3 dnschef.py -h; then
-		echo -e "${G}[+] dnschef installed successfully!${N}"
-		echo -e "$[*]{B}Creating dnschef wrapper...${N}"
-		chmod +x dnschef.py
-		cd
-		tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
+    sudo -i bash << 'EOF'
+source /opt/python-venv/bin/activate
+cd /opt
+git clone https://github.com/iphelix/dnschef.git
+cd dnschef
+pip install -r requirements.txt 
+if python3 dnschef.py -h; then
+    echo -e "${G}[+] dnschef installed successfully!${N}"
+    echo -e "${B}[*] Creating dnschef wrapper...${N}"
+    chmod +x dnschef.py
+    cd
+    tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
 #!/bin/bash 
 
 source /opt/python-venv/bin/activate 
 exec /opt/dnschef/dnschef.py "\$@" 
 EOFSCRIPT
-		chmod +x /opt/dnschef/dnschef_wrapper.sh
-		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
-		echo -e "${G}[+] dnschef wrapper created!${N}
-	else
-		echo -e "${R}[-] Failed to install dnschef!${N}"
-		echo "[>] Continuing..."
-	fi
+    chmod +x /opt/dnschef/dnschef_wrapper.sh
+    ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
+    echo -e "${G}[+] dnschef wrapper created!${N}"
+else
+    echo -e "${R}[-] Failed to install dnschef!${N}"
+    echo "[>] Continuing..."
+fi
 EOF
 
 else
-	sudo -i bash  << 'EOF'
-	cd /opt
-	git clone https://github.com/iphelix/dnschef.git
-	cd dnschef
-	pip install -r requirements.txt 
-	if python3 dnschef.py -h; then
-		echo -e "${G}[+] dnschef installed successfully!${N}"
-		chmod +x dnschef.py
-		cd
-		tee /opt/dnschef/dnschef_wrapper.sh > /dev/nul  << 'EOFSCRIPT' 
+    sudo -i bash << 'EOF'
+cd /opt
+git clone https://github.com/iphelix/dnschef.git
+cd dnschef
+pip install -r requirements.txt 
+if python3 dnschef.py -h; then
+    echo -e "${G}[+] dnschef installed successfully!${N}"
+    chmod +x dnschef.py
+    cd
+    tee /opt/dnschef/dnschef_wrapper.sh > /dev/null << 'EOFSCRIPT'
 #!/bin/bash 
 
 source /opt/python-venv/bin/activate 
 exec /opt/dnschef/dnschef.py "\$@" 
 EOFSCRIPT
-		
-		chmod +x /opt/dnschef/dnschef_wrapper.sh
-		ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
-		echo -e "${G}[+] dnschef wrapper created!${N}
-	else
-		echo -e "${R}[-] Failed to install dnschef!${N}"
-		echo "[>] Continuing..."
-	fi
+    chmod +x /opt/dnschef/dnschef_wrapper.sh
+    ln -s /opt/dnschef/dnschef_wrapper.sh /usr/local/bin/dnschef
+    echo -e "${G}[+] dnschef wrapper created!${N}"
+else
+    echo -e "${R}[-] Failed to install dnschef!${N}"
+    echo "[>] Continuing..."
+fi
 EOF
 
 fi
 
 echo -e "${B}[*] Installing ldap-scanner...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
-	sudo -i bash<< 'EOF'
-	source /opt/python-venv/bin/activate
-	cd /opt
-	git clone https://github.com/GoSecure/ldap-scanner.git 
-	cd ldap-scanner
-	pip install impacket 
-	pip install --upgrade setuptools
-	if python3 ldap-scanner.py -h; then
-		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
-		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
-		chmod +x ldap-scanner.py
-		cd
-		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
+    sudo -i bash << 'EOF'
+source /opt/python-venv/bin/activate
+cd /opt
+git clone https://github.com/GoSecure/ldap-scanner.git 
+cd ldap-scanner
+pip install impacket 
+pip install --upgrade setuptools
+if python3 ldap-scanner.py -h; then
+    echo -e "${G}[+] ldap-scanner installed successfully!${N}"
+    echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
+    chmod +x ldap-scanner.py
+    cd
+    tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null << 'EOFSCRIPT'
 #!/bin/bash 
 
 source /opt/python-venv/bin/activate 
 exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
 EOFSCRIPT
-		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
-		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
-		echo -e "${G}[+] ldap-scanner wrapper created!${N}
-	else
-		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
-		echo "[>] Continuing..."
-	fi
+    chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
+    ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
+    echo -e "${G}[+] ldap-scanner wrapper created!${N}"
+else
+    echo -e "${R}[-] Failed to install ldap-scanner!${N}"
+    echo "[>] Continuing..."
+fi
 EOF
 
 else
-	sudo -i bash << 'EOF'
-	cd /opt
-	git clone https://github.com/GoSecure/ldap-scanner.git 
-	cd ldap-scanner
-	pip install impacket 
-	pip install --upgrade setuptools
-	if python3 ldap-scanner.py -h; then
-		echo -e "${G}[+] ldap-scanner installed successfully!${N}"
-		echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
-		chmod +x ldap-scanner.py
-		cd
-		tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null  << 'EOFSCRIPT' 
+    sudo -i bash << 'EOF'
+cd /opt
+git clone https://github.com/GoSecure/ldap-scanner.git 
+cd ldap-scanner
+pip install impacket 
+pip install --upgrade setuptools
+if python3 ldap-scanner.py -h; then
+    echo -e "${G}[+] ldap-scanner installed successfully!${N}"
+    echo -e "${B}[*] Creating ldap-scanner wrapper...${N}"
+    chmod +x ldap-scanner.py
+    cd
+    tee /opt/ldap-scanner/ldap-scanner_wrapper.sh > /dev/null << 'EOFSCRIPT'
 #!/bin/bash 
 
 source /opt/python-venv/bin/activate 
 exec /opt/ldap-scanner/ldap-scanner.py "\$@" 
 EOFSCRIPT
-		chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
-		ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
-		echo -e "${G}[+] ldap-scanner wrapper created!${N}
-	else
-		echo -e "${R}[-] Failed to install ldap-scanner!${N}"
-		echo "[>] Continuing..."
-	fi	
+    chmod +x /opt/ldap-scanner/ldap-scanner_wrapper.sh
+    ln -s /opt/ldap-scanner/ldap-scanner_wrapper.sh /usr/local/bin/ldapscanner
+    echo -e "${G}[+] ldap-scanner wrapper created!${N}"
+else
+    echo -e "${R}[-] Failed to install ldap-scanner!${N}"
+    echo "[>] Continuing..."
+fi
 EOF
 
 fi
+
 
 echo -e "${B}[*] Installing bloodhound...${N}"
 # if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
