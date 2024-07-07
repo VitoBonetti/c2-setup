@@ -40,3 +40,10 @@ source /etc/bash.bashrc
 #### Knows issues
 
 - ...
+
+#### To Do
+
+- Change location of low privilage Python Virtual environment
+- kerbrute wrapper
+- certipy wrapper
+- bloodhound wrapper
