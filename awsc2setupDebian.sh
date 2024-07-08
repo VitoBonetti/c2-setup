@@ -492,7 +492,7 @@ source /home/admin/python-venv/bin/activate
 pip install bloodhound 
 if bloodhound-python --help; then
 	echo -e "${G}[+]bloodhound installed successfully!${N}"
-	echo -e "${B}[*] Creating certipy-ad wrapper...${N}"
+	echo -e "${B}[*] Creating bloodhound wrapper...${N}"
  	sudo mkdir -p /opt/bloodhound-python
 	sudo tee /opt/bloodhound-python/bloodhound-python_wrapper.sh > /dev/null << 'EOF'
 #!/bin/bash 
@@ -836,16 +836,14 @@ echo -e "${B}[*] Updating database...${N}"
 sudo updatedb
 echo -e "${G}[+] Database successfully updated...${N}"
 
-end_time=$(date +%s)
-execution_time=$((end_time - start_time))
-echo -e "${0}"
-echo "[+] Done"
-echo "[+] Execution time: $execution_time seconds"
+echo -e "${O}Remember to run:${N}"
+echo -e "${B}"
+echo "- source /etc/profile"
+echo "- source /etc/bash.bashrc"
 echo -e "${N}"
+echo -e "${O}After the script terminate${N}"
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
-echo -e "${0}"
-echo "[+] Done"
-echo "[+] Execution time: $execution_time seconds"
-echo -e "${N}"
+echo -e "${G}[+] Done${N}"
+echo -e "${0}[+] Execution time: $execution_time seconds${N}"
