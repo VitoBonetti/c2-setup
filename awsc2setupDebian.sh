@@ -322,6 +322,7 @@ source /home/admin/python-venv/bin/activate
 if pip install wheel lxml==4.9.3 certipy-ad; then
 	echo -e "${G}[+] certipy-ad installed successfully!${N}"
 	echo -e "${B}[*] Creating certipy-ad wrapper...${N}"
+ 	sudo mkdir -p /opt/certipy-ad
 	sudo tee /opt/certipy-ad/certipy-ad_wrapper.sh > /dev/null << 'EOF'
 #!/bin/bash 
 
@@ -357,6 +358,7 @@ pip install --upgrade setuptools
 if kerbrute --help; then
 	echo -e "${G}[+] kerbrute installed successfully!${N}"
 	echo -e "${B}[*] Creating kerbrute wrapper...${N}"
+  	sudo mkdir -p /opt/kerbrute
 	sudo tee /opt/kerbrute/kerbrute_wrapper.sh > /dev/null << 'EOF'
 #!/bin/bash 
 
@@ -491,6 +493,7 @@ pip install bloodhound
 if bloodhound-python --help; then
 	echo -e "${G}[+]bloodhound installed successfully!${N}"
 	echo -e "${B}[*] Creating certipy-ad wrapper...${N}"
+ 	 sudo mkdir -p /opt/bloodhound-python
 	sudo tee /opt/bloodhound-python/bloodhound-python_wrapper.sh > /dev/null << 'EOF'
 #!/bin/bash 
 
