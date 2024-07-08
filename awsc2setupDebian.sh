@@ -321,6 +321,16 @@ echo -e "${B}[*] Installing certipy-ad...${N}"
 source /home/admin/python-venv/bin/activate
 if pip install wheel lxml==4.9.3 certipy-ad; then
 	echo -e "${G}[+] certipy-ad installed successfully!${N}"
+	echo -e "${B}[*] Creating certipy-ad wrapper...${N}"
+	sudo tee /opt/certipy-ad/certipy-ad_wrapper.sh > /dev/null << 'EOF'
+#!/bin/bash 
+
+source /home/admin/python-venv/bin/activate
+certipy
+EOF
+	chmod +x /opt/certipy-ad/certipy-ad_wrapper.sh
+	ln -s /opt/certipy-ad/certipy-ad_wrapper.sh /usr/local/bin/certipy
+    echo -e "${G}[+] certipy wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install certipy-ad!${N}"
 	echo "[>] Continuing..."
@@ -346,6 +356,16 @@ pip install kerbrute
 pip install --upgrade setuptools
 if kerbrute --help; then
 	echo -e "${G}[+] kerbrute installed successfully!${N}"
+	echo -e "${B}[*] Creating kerbrute wrapper...${N}"
+	sudo tee /opt/kerbrute/kerbrute_wrapper.sh > /dev/null << 'EOF'
+#!/bin/bash 
+
+source /home/admin/python-venv/bin/activate
+kerbrute
+EOF
+    chmod +x /opt/kerbrute/kerbrute_wrapper.sh
+    ln -s /opt/kerbrute/kerbrute_wrapper.sh /usr/local/bin/kerbrute
+    echo -e "${G}[+] kerbrute wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install kerbrute!${N}"
 	echo "[>] Continuing..."
@@ -470,6 +490,16 @@ source /home/admin/python-venv/bin/activate
 pip install bloodhound 
 if bloodhound-python --help; then
 	echo -e "${G}[+]bloodhound installed successfully!${N}"
+	echo -e "${B}[*] Creating certipy-ad wrapper...${N}"
+	sudo tee /opt/bloodhound-python/bloodhound-python_wrapper.sh > /dev/null << 'EOF'
+#!/bin/bash 
+
+source /home/admin/python-venv/bin/activate
+bloodhound-python
+EOF
+	chmod +x /opt/bloodhound-python/bloodhound-python_wrapper.sh
+	ln -s /opt/bloodhound-python/bloodhound-python_wrapper.sh /usr/local/bin/bloodhound
+    echo -e "${G}[+] bloodhound-python wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install bloodhound!${N}"
 	echo "[>] Continuing..."
