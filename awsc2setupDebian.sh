@@ -329,8 +329,8 @@ if pip install wheel lxml==4.9.3 certipy-ad; then
 source /home/admin/python-venv/bin/activate
 certipy
 EOF
-	chmod +x /opt/certipy-ad/certipy-ad_wrapper.sh
-	ln -s /opt/certipy-ad/certipy-ad_wrapper.sh /usr/local/bin/certipy
+	sudo chmod +x /opt/certipy-ad/certipy-ad_wrapper.sh
+	sudo ln -s /opt/certipy-ad/certipy-ad_wrapper.sh /usr/local/bin/certipy
     echo -e "${G}[+] certipy wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install certipy-ad!${N}"
@@ -365,8 +365,8 @@ if kerbrute --help; then
 source /home/admin/python-venv/bin/activate
 kerbrute
 EOF
-    chmod +x /opt/kerbrute/kerbrute_wrapper.sh
-    ln -s /opt/kerbrute/kerbrute_wrapper.sh /usr/local/bin/kerbrute
+    sudo chmod +x /opt/kerbrute/kerbrute_wrapper.sh
+    sudo ln -s /opt/kerbrute/kerbrute_wrapper.sh /usr/local/bin/kerbrute
     echo -e "${G}[+] kerbrute wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install kerbrute!${N}"
@@ -493,15 +493,15 @@ pip install bloodhound
 if bloodhound-python --help; then
 	echo -e "${G}[+]bloodhound installed successfully!${N}"
 	echo -e "${B}[*] Creating certipy-ad wrapper...${N}"
- 	 sudo mkdir -p /opt/bloodhound-python
+ 	sudo mkdir -p /opt/bloodhound-python
 	sudo tee /opt/bloodhound-python/bloodhound-python_wrapper.sh > /dev/null << 'EOF'
 #!/bin/bash 
 
 source /home/admin/python-venv/bin/activate
 bloodhound-python
 EOF
-	chmod +x /opt/bloodhound-python/bloodhound-python_wrapper.sh
-	ln -s /opt/bloodhound-python/bloodhound-python_wrapper.sh /usr/local/bin/bloodhound
+	sudo chmod +x /opt/bloodhound-python/bloodhound-python_wrapper.sh
+	sudo ln -s /opt/bloodhound-python/bloodhound-python_wrapper.sh /usr/local/bin/bloodhound
     echo -e "${G}[+] bloodhound-python wrapper created!${N}"
 else
 	echo -e "${R}[-] Failed to install bloodhound!${N}"
