@@ -747,39 +747,63 @@ fi
 sudo mkdir /opt/whatihave
 sudo tee /opt/whatihave/whatihave.txt > /dev/null  << 'EOF' 
 
-##########################################################################################
-##                                USEFUL INFORMATION                                    ##
-##########################################################################################
+=======================================================================================
+|  										      |
+|                               USEFUL INFORMATION                                    |
+| 										      |
+=======================================================================================
+| Short cuts                                                                          |
+=======================================================================================
+| Ligolo proxy             | sudo lg-proxy                                            |
+| Dnschef                  | sudo dnschef                                             |
+| ldap-scanner             | sudo ldapscanner                                         | 
+| kerbrute                 | kerbrute                                                 |
+| certipy-ad               | certipy                                                  |
+| bloodhound-python        | bloodhound                                               | 
+| adidnsdump               | sudo adidnsdump                                          |
+| ADenum                   | sudo adenum                                              |
+| Google Maps API Scanner  | sudo gmapsapiscanner                                     | 
+=======================================================================================
+| Locations                                                                           |
+=======================================================================================
+| Ligolo agent             | /opt/ligolo-agent                                        |
+| SecLists                 | /usr/share/wordlist/SecLists                             |
+=======================================================================================
+| Applications running in Docker                                                      |
+=======================================================================================
+| ManSpider                | sudo docker run blacklanternsecurity/manspider --help    |
+| NetExec                  | sudo docker run netexec --help                           |
+| Nikto                    | sudo docker run --rm sull/nikto                          | 
+| Gowitness                | sudo docker run --rm leonjza/gowitness gowitness --help  | 
+=======================================================================================
+|  										      |
+|                               INSTALLED PACKAGES                                    |
+| 										      |
+=======================================================================================
+| - net-tools              | - bloodhound-python **   | - unzip                       |
+| - git                    | - adidnsdump **          | - smbmap 		      |
+| - python3-venv           | - nmap                   | - cewl   		      |	
+| - plocate                | - ADenum **              | - john  		      |
+| - apache2                | - gmapsapiscanner **     | - powershell 		      |
+| - go                     | - nikto *                | - wpscan 		      |
+| - garble                 | - SecLists ***           | - ldap-scanner ** 	      |
+| - ligolo-proxy **        | - sendemail              | - dnschef **  		      |
+| - ligolo-agent ***       | - socat                  | - hping3 		      |
+| - curl                   | - hashcat                | - ruby  		      |
+| - ca-certificates        | - hydra                  | - enum4linux  		      |
+| - docker                 | - netcat                 | - screen  		      |
+| - manspider *            | - dnsdump                | - whatweb 		      |   
+| - certypy-ad **          | - sqlmap                 | - gowitness * 		      |
+| - netexec *              | - gobuster               | - rustscan  		      |
+| - kerbrute **            | - dirb                   | - wine 	         	      |
+======================================================================================= 
+| *   Docker                                  					      |
+| **  Shortcut                                      				      |
+| *** Location                                       				      |
+=======================================================================================
 
-##########################################################################################
-## Short cuts                                                                           ##
-##########################################################################################
-## Ligolo proxy             ## sudo lg-proxy                                            ##
-## Dnschef                  ## sudo dnschef                                             ##
-## ldap-scanner             ## sudo ldapscanner                                         ## 
-## adidnsdump               ## sudo adidnsdump                                          ## 
-## ADenum                   ## sudo adenum                                              ##
-## Google Maps API Scanner  ## sudo gmapsapiscanner                                     ## 
-##########################################################################################
+- To see this message again run the command 'whatihave'...
 
-##########################################################################################
-## Locations                                                                            ##
-##########################################################################################
-## Ligolo agent             ## /opt/ligolo-agent                                        ##
-## SecLists                 ## /usr/share/wordlist/SecLists                             ##
-##########################################################################################
-
-##########################################################################################
-## Applications running in Docker                                                       ##
-##########################################################################################
-## ManSpider                ## sudo docker run blacklanternsecurity/manspider --help    ##
-## NetExec                  ## sudo docker run netexec --help                           ##
-## Nikto                    ## sudo docker run --rm sull/nikto                          ## 
-## Gowitness                ## sudo docker run --rm leonjza/gowitness gowitness --help  ## 
-##########################################################################################
-
-## To see this message again run the command 'whatihave'...
-## To see the complete list of tools run the command `inthebelly`...
 EOF
 
 sudo chmod 644 /opt/whatihave/whatihave.txt
@@ -790,58 +814,23 @@ exec cat /opt/whatihave/whatihave.txt
 EOF
 sudo chmod +x /opt/whatihave/whatihave_wrapper.sh 
 sudo ln -s /opt/whatihave/whatihave_wrapper.sh /usr/local/bin/whatihave
-echo "cat /opt/whatihave/whatihave.txt" | sudo tee -a /etc/bash.bashrc
+sudo tee /opt/whatihave/infoshell.txt > /dev/null  << 'EOF' 
+
+
+Notes for use
+========================================================================================
+To get an overview of all applications installed on the c2, run the 'whatihave' command.
+========================================================================================
+
+
+EOF
+
+sudo chmod 644 /opt/whatihave/infoshell.txt
+echo "cat /opt/whatihave/infoshell.txt" | sudo tee -a /etc/bash.bashrc
 source /etc/bash.bashrc
 
-sudo mkdir /opt/inthebelly
-sudo tee /opt/inthebelly/inthebelly.txt  > /dev/null  << 'EOF' 
-
-##########################################################
-##              All installed packages                  ##
-##########################################################
-## - net-tools              ## - bloodhound-python      ##
-## - git                    ## - adidnsdump **          ##
-## - python3-venv           ## - nmap                   ##
-## - plocate                ## - ADenum **              ##
-## - apache2                ## - gmapsapiscanner **     ##
-## - go                     ## - nikto *                ##
-## - garble                 ## - SecLists ***           ##
-## - ligolo-proxy **        ## - sendemail              ##
-## - ligolo-agent ***       ## - socat                  ##
-## - curl                   ## - hashcat                ##
-## - ca-certificates        ## - hydra                  ##
-## - docker                 ## - netcat                 ##
-## - manspider *            ## - dnsdump                ##
-## - certypy-ad             ## - sqlmap                 ##
-## - netexec *              ## - gobuster               ##
-## - kerbrute               ## - dirb                   ##
-## - dnschef **             ## - hping3                 ##
-## - ldap-scanner **        ## - ruby                   ##
-## - wpscan                 ## - enum4linux             ##
-## - powershell             ## - screen                 ##
-## - john                   ## - whatweb                ##
-## - cewl                   ## - gowitness *            ##
-## - smbmap                 ## - rustscan               ##
-## - unzip   		        ## - wine			        ##
-########################################################## 
-## *   Docker                                           ##
-## **  Shortcut                                         ##
-## *** Location                                         ##
-##########################################################
-
-## To see this message again run the command 'inthebelly'...
-## To know more about docker apps, shortcut and locations run the command `whatihave`...
-EOF
-sudo chmod 644 /opt/inthebelly/inthebelly.txt
-sudo tee /opt/inthebelly/inthebelly_wrapper.sh  > /dev/null  << 'EOF' 
-#!/bin/bash
-
-exec cat /opt/inthebelly/inthebelly.txt
-EOF
-sudo chmod +x /opt/inthebelly/inthebelly_wrapper.sh 
-sudo ln -s /opt/inthebelly/inthebelly_wrapper.sh /usr/local/bin/inthebelly
 cd
-inthebelly
+whatihave
 
 echo -e "${B}[*] Updating database...${N}"
 sudo updatedb
