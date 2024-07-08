@@ -131,10 +131,10 @@ install_package "python3-venv"
 
 echo -e "${B}[*] Creating 2 Python virtual environments.${N}"
 echo -e "${Y}[^] /opt/python-venv  --> High Privilages${N}"
-echo -e "${Y}[=] /tmp/python-venv  --> Low  Privilages${N}"
+echo -e "${Y}[=] /home/admin/python-venv  --> Low  Privilages${N}"
 
 # Create low privilege virtual environment
-cd /tmp
+cd /home/admin
 if python3 -m venv python-venv; then
 	sleep 5
 	echo -e "${G}[+] Low Privilages Python virtual environment created successfully!${N}"
@@ -318,17 +318,13 @@ else
 fi
 
 echo -e "${B}[*] Installing certipy-ad...${N}"
-# if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
-source /tmp/python-venv/bin/activate
-pip install wheel
-pip install lxml==4.9.3
-pip install certipy-ad
-# else
-#	pip install wheel
-#	pip install lxml==4.9.3
-#	pip install certipy-ad
-# fi
-echo -e "${G}[+] certipy-ad installed successfully!${N}"
+source /home/admin/python-venv/bin/activate
+if pip install wheel lxml==4.9.3 certipy-ad; then
+	echo -e "${G}[+] certipy-ad installed successfully!${N}"
+else
+	echo -e "${R}[-] Failed to install certipy-ad!${N}"
+	echo "[>] Continuing..."
+fi
 
 echo -e "${B}[*] Installing NetExec...${N}"
 cd /opt
@@ -345,8 +341,7 @@ fi
 cd
 
 echo -e "${B}[*] Installing kerbrute...${N}"
-# if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
-source /tmp/python-venv/bin/activate
+source /home/admin/python-venv/bin/activate
 pip install kerbrute
 pip install --upgrade setuptools
 if kerbrute --help; then
@@ -355,16 +350,6 @@ else
 	echo -e "${R}[-] Failed to install kerbrute!${N}"
 	echo "[>] Continuing..."
 fi	
-# else
-#	pip install kerbrute
-#	pip install --upgrade setuptools
-#	if kerbrute; then
-#		echo -e "${G}[+] kerbrute installed successfully!${N}"
-#	else
-#		echo -e "${R}[-] Failed to install kerbrute!${N}"
-#		echo "[>] Continuing..."
-#	fi	
-# fi
 
 echo -e "${B}[*] Installing dnschef...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
@@ -481,8 +466,7 @@ fi
 
 
 echo -e "${B}[*] Installing bloodhound...${N}"
-# if [[ "$VIRTUAL_ENV" != "/tmp/python-venv" ]]; then
-source /tmp/python-venv/bin/activate
+source /home/admin/python-venv/bin/activate
 pip install bloodhound 
 if bloodhound-python --help; then
 	echo -e "${G}[+]bloodhound installed successfully!${N}"
@@ -490,15 +474,6 @@ else
 	echo -e "${R}[-] Failed to install bloodhound!${N}"
 	echo "[>] Continuing..."
 fi	
-# else
-#	pip install bloodhound 
-#	if bloodhound-python --help; then
-#		echo -e "${G}[+]bloodhound installed successfully!${N}"
-#	else
-#		echo -e "${R}[-] Failed to install bloodhound!${N}"
-#		echo "[>] Continuing..."
-#	fi	
-# fi
 
 echo -e "${B}[*] Installing adidnsdump ...${N}"
 if [[ "$VIRTUAL_ENV" != "/opt/python-venv" ]]; then
@@ -814,7 +789,7 @@ sudo tee /opt/inthebelly/inthebelly.txt  > /dev/null  << 'EOF'
 ## - john                   ## - whatweb                ##
 ## - cewl                   ## - gowitness *            ##
 ## - smbmap                 ## - rustscan               ##
-## - unzip   		    ## - wine			##
+## - unzip   		        ## - wine			        ##
 ########################################################## 
 ## *   Docker                                           ##
 ## **  Shortcut                                         ##
