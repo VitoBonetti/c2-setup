@@ -17,6 +17,7 @@ This script has been optimized and tested for run on a AWS EC2 Debian instances.
 - **Debian 12 (HVM)**, SSD Volume Type<br>
   **ami-0983f1f9ba9026e4e (64-bit (x86))**<br>
   Debian 12 (HVM), EBS General Purpose (SSD) Volume Type. Community developed free GNU/Linux distribution. https://www.debian.org/
+- Type: **t2.micro** 
 
 #### *EC2 Instances basic set up*
 
@@ -43,7 +44,4 @@ source /etc/bash.bashrc
 
 #### To Do
 
-- Change location of low privilage Python Virtual environment
-- kerbrute wrapper
-- certipy wrapper
-- bloodhound wrapper
+- ...
