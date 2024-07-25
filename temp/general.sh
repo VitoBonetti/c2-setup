@@ -36,15 +36,15 @@ install_snap() {
         echo -e "${G}[+] ${package} is already installed!${N}"
     else
         if sudo snap install "${package}"; then
-            if  snap list | grep "$package" > /dev/null 2>&1; then
+            if snap list | grep "$package" > /dev/null 2>&1; then
                 echo -e "${G}[+] ${package} installed successfully!${N}"
-            else    
+            else
                 echo -e "${R}[-] Failed to verify ${package} installation!${N}"
                 echo "[>] Continuing..."
             fi
         else
             if sudo snap install "${package}" --classic; then
-                if  snap list | grep "$package" > /dev/null 2>&1; then
+                if snap list | grep "$package" > /dev/null 2>&1; then
                     echo -e "${G}[+] ${package} installed successfully!${N}"
                 else    
                     echo -e "${R}[-] Failed to verify ${package} installation!${N}"
@@ -53,9 +53,9 @@ install_snap() {
             else
                 echo -e "${R}[-] Failed to install ${package}!${N}"
                 echo "[>] Continuing..."
+            fi
         fi
     fi
-    
 }
 
 # assign current user
