@@ -82,6 +82,11 @@ echo -e "${O}[*] Upgrading the system...${N}"
 sudo apt upgrade -y
 echo -e "${G}[+] Done! ${N}"
 
+if [[ $DESCRIPTION == "Debian*"]]; then
+    echo 'export PATH=$PATH:/snap/bin:/usr/sbin' >> ~/.profile
+    source ~/.profile
+fi
+
 echo -e "${O}[*] Installing development tools...${N}"
 
 install_package "build-essential"
@@ -143,9 +148,8 @@ else
 fi
 
 if [[ $DESCRIPTION == "Debian*"]]; then
-    install_package "snapd"
-    echo 'export PATH=$PATH:/snap/bin:/usr/sbin' >> ~/.profile
     source ~/.profile
+    install_package "snapd"
     install_package "git"
 fi
 
