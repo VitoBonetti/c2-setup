@@ -79,8 +79,8 @@ echo -e "${O}[*] Updating the system...${N}"
 sudo apt update -y
 echo -e "${G}[+] Done! ${N}"
 echo -e "${O}[*] Upgrading the system...${N}"
-echo -e "${G}[+] Done! ${N}"
 sudo apt upgrade -y
+echo -e "${G}[+] Done! ${N}"
 
 echo -e "${O}[*] Installing development tools...${N}"
 
