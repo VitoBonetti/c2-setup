@@ -82,7 +82,7 @@ echo -e "${O}[*] Upgrading the system...${N}"
 sudo apt upgrade -y
 echo -e "${G}[+] Done! ${N}"
 
-if [[ $DESCRIPTION == "Debian*"]]; then
+if [[ $DESCRIPTION == Debian*]]; then
     echo 'export PATH=$PATH:/snap/bin:/usr/sbin' >> ~/.profile
     source ~/.profile
 fi
@@ -147,7 +147,7 @@ else
 	exit 1
 fi
 
-if [[ $DESCRIPTION == "Debian*"]]; then
+if [[ $DESCRIPTION == Debian*]]; then
     source ~/.profile
     install_package "snapd"
     install_package "git"
@@ -221,7 +221,7 @@ install_package "whatweb"
 install_package "sendemail"
 install_package "ruby-dev"
 
-if [[ DESCRIPTION == "Ubuntu*"]]; then
+if [[ DESCRIPTION == Ubuntu*]]; then
     install_package "socat"
 fi
 
@@ -246,7 +246,7 @@ install_snap "powershell"
 
 echo -e "${G}[+] Done! ${N}"
 
-if [[ DESCRIPTION == "Ubuntu*"]]; then
+if [[ DESCRIPTION == Ubuntu*]]; then
     install_package "wine64"
 elif [[ DESCRIPTION == "Debian GNU Linux 11 (bullseye)"]]; then
     echo -e "${O}[*] Installing wine...${N}"
@@ -318,7 +318,7 @@ fi
 
 deactivate
 
-if [[ DESCRIPTION == "Debian*"]]; then
+if [[ DESCRIPTION == Debian*]]; then
     source ~/.profile
 fi
 
