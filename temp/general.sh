@@ -15,7 +15,7 @@ install_package() {
     if dpkg -s "${package}" > /dev/null 2>&1; then
         echo -e "${G}[+] ${package} is already installed!${N}"
     else
-        if sudo apt install -y "${package} > 2>/dev/null"; then
+        if sudo apt install -y "${package}" > /dev/null 2>&1; then
             if dpkg -s "${package}" > /dev/null 2>&1; then
                 echo -e "${G}[+] ${package} installed successfully!${N}"
             else
