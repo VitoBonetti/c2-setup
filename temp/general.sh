@@ -58,10 +58,31 @@ install_snap() {
     fi
 }
 
-# assign current user
+check_and_upgrade_ruby() {
+    required_ruby_version="3.0.0"
+    current_ruby_version=$(ruby -v | awk '{print $2}')
+    echo -e "${O}[*] Current Ruby version: ${current_ruby_version}${N}"
+    if [ "$(printf '%s\n' "$required_ruby_version" "$current_ruby_version" | sort -V | head -n1)" != "$required_ruby_version" ]; then
+        echo -e "${G}[+] Ruby is up to date!${N}"
+    else
+        echo -e "${O}[*] Upgrading Ruby to version ${required_ruby_version}...${N}"
+        sudo apt update
+        sudo apt install -y software-properties-common
+        sudo add-apt-repository -y ppa:brightbox/ruby-ng
+        sudo apt update
+        sudo apt install -y ruby${required_ruby_version}
+        echo -e "${G}[+] Ruby upgraded to version $(ruby -v | awk '{print $2}')${N}"
+    fi
+
+    echo -e "${O}[*] Updating RubyGems...${N}"
+    sudo gem update --system
+    echo -e "${G}[+] RubyGems updated to version $(gem --version)${N}"
+}
+
+# Assign current user
 current_user=$USER
 
-# starting the script
+# Starting the script
 start_time=$(date +%s)
 
 echo -e "${B}"
@@ -104,11 +125,11 @@ else
     install_package "plocate"
 fi
 
-echo -e "${O}[*] Reloding daemon...${N}"
+echo -e "${O}[*] Reloading daemon...${N}"
 sudo systemctl daemon-reload
 echo -e "${G}[+] Done! ${N}"
 
-echo -e "${O}[*] Make the /tmp folder persistence...${N}"
+echo -e "${O}[*] Making the /tmp folder persistent...${N}"
 sudo touch /etc/tmpfiles.d/tmp.conf
 echo "# Disable automatic cleanup of /tmp" | sudo tee /etc/tmpfiles.d/tmp.conf
 echo "d /tmp 1777 root root -" | sudo tee -a /etc/tmpfiles.d/tmp.conf
@@ -123,28 +144,28 @@ if python -m venv env; then
     sleep 5
     echo -e "${G}[+] Python virtual environment created successfully at '/home/${current_user}/env'.${N}"
     if source env/bin/activate; then
-		if [ -z "$VIRTUAL_ENV" ]; then
-    		echo -e "${R}[-] No virtual environment is active.${N}"
-		else
-			echo -e "${G}[+] Virtual environment is active: $VIRTUAL_ENV${N}"
+        if [[ -z "$VIRTUAL_ENV" ]]; then
+            echo -e "${R}[-] No virtual environment is active.${N}"
+        else
+            echo -e "${G}[+] Virtual environment is active: $VIRTUAL_ENV${N}"
             echo -e "${O}[*] Deactivating.${N}"
             deactivate
-		fi
-	else
-		echo -e "${R}"
-		echo "[-] Failed to activate Python virtual environment!"
-		echo "[-] The script can't continue."
-		echo "[-] Terminating.."
-		echo -e "${N}"
-		exit 1
-	fi	
+        fi
+    else
+        echo -e "${R}"
+        echo "[-] Failed to activate Python virtual environment!"
+        echo "[-] The script can't continue."
+        echo "[-] Terminating.."
+        echo -e "${N}"
+        exit 1
+    fi    
 else
-	echo -e "${R}"
-	echo "[-] Failed to activate Python virtual environment!"
-	echo "[-] The script can't continue."
-	echo "[-] Terminating.."
-	echo -e "${N}"
-	exit 1
+    echo -e "${R}"
+    echo "[-] Failed to activate Python virtual environment!"
+    echo "[-] The script can't continue."
+    echo "[-] Terminating.."
+    echo -e "${N}"
+    exit 1
 fi
 
 if [[ $DESCRIPTION == Debian* ]]; then
@@ -156,57 +177,56 @@ fi
 install_package "apache2"
 
 if sudo systemctl is-active --quiet apache2; then
-	echo -e "${G}[+] apache2 web server is up and running!${N}"
+    echo -e "${G}[+] apache2 web server is up and running!${N}"
 else
     sudo systemctl start apache2
     if sudo systemctl is-active --quiet apache2; then
         echo -e "${G}[+] apache2 web server is up and running!${N}"
     else
         echo -e "${R}[-] Failed to start apache2 web server!${N}"
-	    echo "[>] Continuing..."
+        echo "[>] Continuing..."
     fi
 fi    
 
 echo -e "${O}[*] Installing docker.io...${N}"
- if dpkg -s docker.io > /dev/null 2>&1; then
+if dpkg -s docker.io > /dev/null 2>&1; then
     echo -e "${G}[+] docker.io is already installed!${N}"
 else
     if sudo apt install -y "docker.io"; then
         if dpkg -s docker.io > /dev/null 2>&1; then
-             echo -e "${G}[+] docker.io installed successfully!${N}"
+            echo -e "${G}[+] docker.io installed successfully!${N}"
         else
             echo -e "${R}"
-		    echo "[-] Failed to verify docker.io installation!"
-		    echo "[-] The script can't continue."
-		    echo "[-] Terminating.."
-		    echo -e "${N}"
-		    exit 1
+            echo "[-] Failed to verify docker.io installation!"
+            echo "[-] The script can't continue."
+            echo "[-] Terminating.."
+            echo -e "${N}"
+            exit 1
         fi 
     else
         echo -e "${R}"
-		echo "[-] Failed to install docker.io!"
-		echo "[-] The script can't continue."
-		echo "[-] Terminating.."
-		echo -e "${N}"
-		exit 1
+        echo "[-] Failed to install docker.io!"
+        echo "[-] The script can't continue."
+        echo "[-] Terminating.."
+        echo -e "${N}"
+        exit 1
     fi
 fi 
 if sudo docker run hello-world; then
-	echo -e "${G}[+] docker server is up and running!${N}"
+    echo -e "${G}[+] docker server is up and running!${N}"
 else
     sudo systemctl start docker
     if sudo docker run hello-world; then
-	    echo -e "${G}[+] docker server is up and running!${N}"
+        echo -e "${G}[+] docker server is up and running!${N}"
     else
         echo -e "${R}"
-		echo "[-] Failed to activate docker.io!"
-		echo "[-] The script can't continue."
-		echo "[-] Terminating.."
-		echo -e "${N}"
-		exit 1
+        echo "[-] Failed to activate docker.io!"
+        echo "[-] The script can't continue."
+        echo "[-] Terminating.."
+        echo -e "${N}"
+        exit 1
     fi
 fi
-
 
 echo -e "${O}[*] Installing tools with APT...${N}"
 install_package "hashcat"
@@ -221,7 +241,10 @@ install_package "whatweb"
 install_package "sendemail"
 install_package "ruby-dev"
 
-if [[ DESCRIPTION == Ubuntu* ]]; then
+# Check and upgrade Ruby version
+check_and_upgrade_ruby
+
+if [[ $DESCRIPTION == Ubuntu* ]]; then
     install_package "socat"
 fi
 
@@ -234,6 +257,7 @@ else
     echo -e "${R}[-] Failed to install wpscan!${N}"
     echo "[>] Continuing..."
 fi
+
 echo -e "${G}[+] Done! ${N}"
 
 echo -e "${O}[*] Installing tools with SNAP...${N}"
@@ -246,9 +270,9 @@ install_snap "powershell"
 
 echo -e "${G}[+] Done! ${N}"
 
-if [[ DESCRIPTION == Ubuntu* ]]; then
+if [[ $DESCRIPTION == Ubuntu* ]]; then
     install_package "wine64"
-elif [[ DESCRIPTION == "Debian GNU Linux 11 (bullseye)" ]]; then
+elif [[ $DESCRIPTION == "Debian GNU Linux 11 (bullseye)" ]]; then
     echo -e "${O}[*] Installing wine...${N}"
     dpkg --print-architecture
     sudo dpkg --add-architecture i386
@@ -263,7 +287,7 @@ elif [[ DESCRIPTION == "Debian GNU Linux 11 (bullseye)" ]]; then
         echo -e "${R}[-] Failed to install wine!${N}"
         echo "[>] Continuing..."
     fi
-elif [[ DESCRIPTION == "Debian GNU Linux 12 (bookworm)" ]]; then
+elif [[ $DESCRIPTION == "Debian GNU Linux 12 (bookworm)" ]]; then
     echo -e "${O}[*] Installing wine...${N}"
     dpkg --print-architecture
     sudo dpkg --add-architecture i386
@@ -271,7 +295,6 @@ elif [[ DESCRIPTION == "Debian GNU Linux 12 (bookworm)" ]]; then
     sudo mkdir -pm755 /etc/apt/keyrings
     sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
     sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
-
     sudo apt update -y 2>/dev/null
     if sudo apt install --install-recommends winehq-stable -y 2>/dev/null; then
         echo -e "${G}[+] wine successfully installed!${N}"
@@ -296,7 +319,6 @@ else
     echo "[>] Continuing..."
 fi
 
-
 echo -e "${O}[*] Installing kerbrute...${N}"
 pip install kerbrute
 pip install --upgrade setuptools
@@ -318,35 +340,35 @@ fi
 
 deactivate
 
-if [[ DESCRIPTION == Debian* ]]; then
+if [[ $DESCRIPTION == Debian* ]]; then
     source ~/.profile
 fi
 
 echo -e "${B}[*] Installing garble...${N}"
 if go install mvdan.cc/garble@master; then
-	echo -e "${G}[+] garble installed successfully!${N}"
+    echo -e "${G}[+] garble installed successfully!${N}"
 else
-	echo -e "${R}[-] Failed to install garble!${N}"
-	echo "[>] Continuing..."
+    echo -e "${R}[-] Failed to install garble!${N}"
+    echo "[>] Continuing..."
 fi
 
 echo -e "${O}[*] Pulling containers from DOCKER...${N}"
 echo -e "${B}[*] Installing manspider...${N}"
 sudo docker pull blacklanternsecurity/manspider
 if sudo docker run blacklanternsecurity/manspider --help; then
-	echo -e "${G}[+] maspider installed successfully!${N}"
+    echo -e "${G}[+] maspider installed successfully!${N}"
 else
-	echo -e "${R}[-] Failed to install manspider!${N}"
-	echo "[>] Continuing..."
+    echo -e "${R}[-] Failed to install manspider!${N}"
+    echo "[>] Continuing..."
 fi
 
 echo -e "${B}[*] Installing gowitness...${N}"
 sudo docker pull leonjza/gowitness
 if sudo docker run --rm leonjza/gowitness gowitness; then
-	echo -e "${G}[+] gowitness installed successfully!${N}"
+    echo -e "${G}[+] gowitness installed successfully!${N}"
 else
-	echo -e "${R}[-] Failed to install gowitness!${N}"
-	echo "[>] Continuing..."
+    echo -e "${R}[-] Failed to install gowitness!${N}"
+    echo "[>] Continuing..."
 fi
 
 echo -e "${O}[*] Cloning NetExec...${N}"
@@ -356,10 +378,10 @@ cd NetExec
 echo -e "${B}[*] Installing NetExec...${N}"
 sudo docker build -t netexec:latest . 
 if sudo docker run netexec --help; then
-	echo -e "${G}[+] netexec installed successfully!${N}"
+    echo -e "${G}[+] netexec installed successfully!${N}"
 else
-	echo -e "${R}[-] Failed to install netexec!${N}"
-	echo "[>] Continuing..."
+    echo -e "${R}[-] Failed to install netexec!${N}"
+    echo "[>] Continuing..."
 fi
 cd
 
@@ -370,10 +392,10 @@ cd nikto
 echo -e "${B}[*] Installing nikto...${N}"
 sudo docker build -t sullo/nikto .
 if sudo docker run --rm sullo/nikto -Version ; then
-	echo -e "${G}[+] nikto installed successfully!${N}"
+    echo -e "${G}[+] nikto installed successfully!${N}"
 else
-	echo -e "${R}[-] Failed to install nikto!${N}"
-	echo "[>] Continuing..."
+    echo -e "${R}[-] Failed to install nikto!${N}"
+    echo "[>] Continuing..."
 fi
 cd
 
@@ -390,19 +412,19 @@ if go build -o lg-proxy cmd/proxy/main.go; then
         echo -e "${G}[+] ligolo proxy installed successfully!${N}"
     else
         echo -e "${R}"
-	    echo "[-] Failed to install ligolo proxy!"
-	    echo "[-] The script can't continue."
-	    echo "[-] Terminating.."
-	    echo -e "${N}"
-	    exit 1
+        echo "[-] Failed to install ligolo proxy!"
+        echo "[-] The script can't continue."
+        echo "[-] Terminating.."
+        echo -e "${N}"
+        exit 1
     fi
 else
     echo -e "${R}"
-	echo "[-] Failed to build ligolo proxy!"
-	echo "[-] The script can't continue."
-	echo "[-] Terminating.."
-	echo -e "${N}"
-	exit 1
+    echo "[-] Failed to build ligolo proxy!"
+    echo "[-] The script can't continue."
+    echo "[-] Terminating.."
+    echo -e "${N}"
+    exit 1
 fi
 cd ..
 
@@ -410,12 +432,12 @@ echo -e "${O}[*] Cloning Ligolo agent...${N}"
 if git clone https://github.com/nicocha30/ligolo-ng ligolo-agent; then
     echo -e "${G}[+] ligolo agent cloned successfully!${N}"
 else
-	echo -e "${R}[-] Failed to cloned ligolo agent!${N}"
-	echo "[>] Continuing..."
+    echo -e "${R}[-] Failed to cloned ligolo agent!${N}"
+    echo "[>] Continuing..."
 fi
 
-if [ -z "$VIRTUAL_ENV" ]; then
-    source /home/${currenr_user}/env/bin/activate
+if [[ -z "$VIRTUAL_ENV" ]]; then
+    source /home/${current_user}/env/bin/activate
 fi
 
 echo -e "${O}[*] Cloning dnschef...${N}"
@@ -476,11 +498,11 @@ echo -e "${O}[*] Cloning gmapsapiscanner...${N}"
 git clone https://github.com/ozguralp/gmapsapiscanner.git
 cd gmapsapiscanner
 if python3 maps_api_scanner.py -h; then
-	echo -e "${G}[+] gmapsapiscanner installed successfully!${N}"
+    echo -e "${G}[+] gmapsapiscanner installed successfully!${N}"
 else
-	echo -e "${R}[-] Failed to install gmapsapiscanner!${N}"
-	echo "[>] Continuing..."
-fi	
+    echo -e "${R}[-] Failed to install gmapsapiscanner!${N}"
+    echo "[>] Continuing..."
+fi    
 cd
 deactivate
 
