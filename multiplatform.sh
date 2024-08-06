@@ -13,7 +13,7 @@ current_user=$USER
 py_venv_path="/home/${current_user}/env/bin/activate"
 
 git_array=("https://github.com/Pennyw0rth/NetExec" "https://github.com/sullo/nikto.git" "https://github.com/0x00-0x00/ligolo-ng"  "https://github.com/iphelix/dnschef.git" "https://github.com/GoSecure/ldap-scanner.git" "https://github.com/dirkjanm/adidnsdump" "https://github.com/VitoBonetti/ADenum.git" "https://github.com/ozguralp/gmapsapiscanner.git")
-apt_development_array=("apt-utils" "build-essential" "libsasl2-dev" "python3-dev" "libldap2-dev" "libssl-dev" "net-tools" "python3-venv")
+apt_development_array=("apt-utils" "build-essential" "libsasl2-dev" "python3-dev" "libldap2-dev" "libssl-dev" "net-tools" "python3-venv" "mlocate")
 debian_array=("snapd" "git" "python3-venv")
 apt_packages_array=("apache2" "docker.io" "hashcat" "hydra-gtk" "gobuster" "dirb" "hping3" "john" "cewl" "smbmap" "whatweb" "sendemail" "ruby-dev" "socat" "wine64")
 snap_packages_array=("go" "nmap" "rustscan" "sqlmap" "enum4linux" "powershell")
