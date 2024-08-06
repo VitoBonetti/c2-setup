@@ -150,11 +150,11 @@ echo -e "${G}[+] Done!${N}"
 sudo ln -s /usr/bin/python3 /usr/bin/python
 
 if [[ $DESCRIPTION == *Debian* ]]; then
-	for package in "${debian_array[@]}"; do
-		install_apt "$package"
-	done
-	export PATH=$PATH:/snap/bin:/usr/bin/snap
+  for package in "${debian_array[@]}"; do
+    install_apt "$package"
+  done
 fi
+export PATH=$PATH:/snap/bin:/usr/bin/snap
 echo -e "${G}[+] Done!${N}"
 
 echo -e "${O}[*] Creating Python virtual environment.${N}"
