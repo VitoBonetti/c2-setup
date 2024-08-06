@@ -11,6 +11,7 @@ P="\033[35m"    # PURPLE Troubleshoot color
 
 current_user=$USER
 py_venv_path="/home/${current_user}/env/bin/activate"
+echo 'export PATH=$PATH:/snap/bin:/usr/bin/snap:/usr/local/go/bin' | tee -a ~/.profile && source ~/.profile
 
 git_array=("https://github.com/Pennyw0rth/NetExec" "https://github.com/sullo/nikto.git" "https://github.com/0x00-0x00/ligolo-ng"  "https://github.com/iphelix/dnschef.git" "https://github.com/GoSecure/ldap-scanner.git" "https://github.com/dirkjanm/adidnsdump" "https://github.com/VitoBonetti/ADenum.git" "https://github.com/ozguralp/gmapsapiscanner.git")
 apt_development_array=("apt-utils" "build-essential" "libsasl2-dev" "python3-dev" "libldap2-dev" "libssl-dev" "net-tools" "python3-venv" "mlocate")
