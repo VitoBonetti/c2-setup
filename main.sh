@@ -108,7 +108,7 @@ upgrade_system() {
   fi
 }
 
-declare -A ubuntu204
+declare -A ubuntu
 
 ubuntu["apt"]="build-essential libsasl2-dev python3-dev libldap2-dev libssl-dev net-tools libreadline-dev zlib1g-dev gnupg2 python3-venv nmap apache2 docker.io hashcat hydra-gtk gobuster dirb hping3 john cewl smbmap whatweb sendemail socat wine64"
 ubuntu["snap"]="sqlmap enum4linux"
