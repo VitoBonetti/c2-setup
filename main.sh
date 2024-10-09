@@ -246,6 +246,7 @@ if [[ $os_version == *"Ubuntu"* ]]; then
 	cd ..
 
 	cd ligolo-ng
+	echo -e "${B}[*] Installing ligolo proxy...${N}"
 	if go build -o lg-proxy cmd/proxy/main.go; then
 		sudo ln -s /home/$current_user/Git/ligolo-ng/lg-proxy /usr/bin/lg-proxy
 		echo -e "${G}[+] ligolo proxy installed successfully!${N}"
