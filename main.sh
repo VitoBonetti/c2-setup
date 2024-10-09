@@ -146,6 +146,7 @@ if [[ $os_version == *"Ubuntu"* ]]; then
             install_apt ${ubuntu[$key]}
 
 			if [[ $os_version == *"24.04"* ]]; then
+   				echo -e "${B}[+] Installing plocate...${N}"
 				if dpkg -s "plocate" > /dev/null 2>&1; then
 			        	echo -e "${G}[+] plocate is already installed!${N}"
 				else
@@ -162,6 +163,7 @@ if [[ $os_version == *"Ubuntu"* ]]; then
 					fi
 			    	fi
 			else
+   				echo -e "${B}[+] Installing mlocate...${N}"
 				if dpkg -s "mlocate" > /dev/null 2>&1; then
 					echo -e "${G}[+] mlocate is already installed!${N}"
 				else
