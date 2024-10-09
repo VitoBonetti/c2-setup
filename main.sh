@@ -147,36 +147,36 @@ if [[ $os_version == *"Ubuntu"* ]]; then
 
 			if [[ $os_version == *"24.04"* ]]; then
 				if dpkg -s "plocate" > /dev/null 2>&1; then
-			        echo -e "${G}[+] plocate is already installed!${N}"
-			    else
-			        if sudo apt install -y plocate > /dev/null 2>&1; then
-			            if dpkg -s plocate > /dev/null 2>&1; then
-			                echo -e "${G}[+] plocate installed successfully!${N}"
-			            else
-			                echo -e "${R}[-] Failed to verify plocate installation!${N}"
-			                echo -e "${C}[>] Continuing...${N}"
-			            fi
-			        else
-			            echo -e "${R}[-] Failed to install plocate!${N}"
-			            echo -e "${C}[>] Continuing...${N}"
-			        fi
-			    fi
+			        	echo -e "${G}[+] plocate is already installed!${N}"
+				else
+					if sudo apt install -y plocate > /dev/null 2>&1; then
+						if dpkg -s plocate > /dev/null 2>&1; then
+							echo -e "${G}[+] plocate installed successfully!${N}"
+						else
+							echo -e "${R}[-] Failed to verify plocate installation!${N}"
+							echo -e "${C}[>] Continuing...${N}"
+						fi
+					else
+						echo -e "${R}[-] Failed to install plocate!${N}"
+						echo -e "${C}[>] Continuing...${N}"
+					fi
+			    	fi
 			else
 				if dpkg -s "mlocate" > /dev/null 2>&1; then
-			        echo -e "${G}[+] mlocate is already installed!${N}"
-			    else
-			        if sudo apt install -y mlocate > /dev/null 2>&1; then
-			            if dpkg -s mlocate > /dev/null 2>&1; then
-			                echo -e "${G}[+] mlocate installed successfully!${N}"
-			            else
-			                echo -e "${R}[-] Failed to verify mlocate installation!${N}"
-			                echo -e "${C}[>] Continuing...${N}"
-			            fi
-			        else
-			            echo -e "${R}[-] Failed to install mlocate!${N}"
-			            echo -e "${C}[>] Continuing...${N}"
-			        fi
-			    fi
+					echo -e "${G}[+] mlocate is already installed!${N}"
+				else
+					if sudo apt install -y mlocate > /dev/null 2>&1; then
+				        	if dpkg -s mlocate > /dev/null 2>&1; then
+				               		echo -e "${G}[+] mlocate installed successfully!${N}"
+				            	else
+					                echo -e "${R}[-] Failed to verify mlocate installation!${N}"
+					                echo -e "${C}[>] Continuing...${N}"
+				            	fi
+				        else
+					        echo -e "${R}[-] Failed to install mlocate!${N}"
+					        echo -e "${C}[>] Continuing...${N}"
+				        fi
+				fi
 			fi
 
         elif [[ $key == "pip" ]]; then
