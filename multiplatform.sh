@@ -273,7 +273,7 @@ sudo tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 source ~/.bashrc 
 rm go1.23.2.linux-amd64.tar.gz
-echo -e "${G}Done!${N}"
+echo -e "${G}[+] Done!${N}"
 
 echo -e "${B}[*] Installing garble...${N}"
 if go install mvdan.cc/garble@master > /dev/null 2>&1; then
