@@ -41,7 +41,7 @@ install_snap() {
 	        echo -e "${C}[>] $package is already installed!${N}"
 	        echo -e "${C}[>] Continuing...${N}"
 	    else
-	        if sudo snap install "${package}"; then
+	        if sudo snap install "${package}" > /dev/null 2>&1; then
 	            if snap list | grep "$package" > /dev/null 2>&1; then
 	                echo -e "${G}[+] $package installed successfully!${N}"
 	            else
@@ -49,7 +49,7 @@ install_snap() {
 	                echo -e "${C}[>] Continuing...${N}"
 	            fi
 	        else
-	            if sudo snap install "$package" --classic; then
+	            if sudo snap install "$package" --classic > /dev/null 2>&1; then
 	                if snap list | grep "$package" > /dev/null 2>&1; then
 	                    echo -e "${G}[+] $package installed successfully!${N}"
 	                else    
