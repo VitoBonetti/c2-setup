@@ -203,8 +203,9 @@ if [[ $os_version == *"Ubuntu"* ]]; then
             python3 -m venv ~/env
             sleep 3
             source ~/env/bin/activate
-			echo -e "${O}[*] Upgrading PIP${N}"
-			pip install --upgrade pip
+	    echo -e "${O}[*] Upgrading PIP${N}"
+	    pip install --upgrade pip  > /dev/null 2>&1
+     	    echo -e "${G}Done!${N}"
 
             echo -e "${O}[*] Installing packages with PIP${N}"
             install_pip ${ubuntu[$key]}
@@ -240,8 +241,9 @@ elif [[ $os_version == *"Debian"* ]]; then
             python3 -m venv ~/env
             sleep 3
             source ~/env/bin/activate
-			echo -e "${O}[*] Upgrading PIP${N}"
-			pip install --upgrade pip
+	    echo -e "${O}[*] Upgrading PIP${N}"
+	    pip install --upgrade pip  > /dev/null 2>&1
+     	    echo -e "${G}Done!${N}"
             echo -e "${O}[*] Installing packages with PIP${N}"
             install_pip ${debian[$key]}
             sleep 3
