@@ -144,6 +144,11 @@ echo -e "${B}[*] Creating Git folder in '/home/$USER'... ${N}"
 mkdir ~/Git
 echo -e "${G}[+] Done!${N}"
 
+echo -e "${B}[*] Creating Tools folder in '/home/$USER'... ${N}"
+mkdir ~/Tools
+echo -e "${G}[+] Done!${N}"
+
+
 if [[ $os_version == *"Ubuntu"* ]]; then
 	for key in "${order[@]}"; do
         if [[ $key == "apt" ]]; then
@@ -314,9 +319,18 @@ pip install -r requirements.txt
 cd ..
 cd ROADtools/
 pip install .
-cd
+cd 
 echo -e "${G}Done!${N}"
 deactivate
+
+cd ~/Tools
+mkdir routes
+cd routes
+echo -e "${B}[*] Downloading 'routes' tool of @Andre Marques...${N}"
+wget https://raw.githubusercontent.com/VitoBonetti/c2-setup/refs/heads/main/routes/configure_routes.sh
+wget https://raw.githubusercontent.com/VitoBonetti/c2-setup/refs/heads/main/routes/ipparser.py
+cd
+echo -e "${G}Done!${N}"
 
 echo -e "${B}[*] Installing manspider...${N}"
 sudo docker pull blacklanternsecurity/manspider
