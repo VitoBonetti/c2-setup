@@ -304,7 +304,7 @@ if [[ $os_version == *"Ubuntu"* ]]; then
 		echo "[!] This it will change depending from the target."
 		echo -e "${N}"
 	else
-		echo -e "${R}[-] Failed to install manspider!${N}"
+		echo -e "${R}[-] Failed to set up ligolo TUN adapter${N}"
 		echo -e "${C}[>] Continuing...${N}"
 	fi
 
