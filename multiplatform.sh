@@ -400,7 +400,7 @@ if sudo git clone https://github.com/danielmiessler/SecLists.git > /dev/null 2>&
 	sudo chmod 755 /usr/share/wordlists
 	sudo chmod -R a+r /usr/share/wordlists
 	sudo find /usr/share/wordlists -type d -exec chmod 755 {} \;
-	echo -e "${G}Done!${N}"
+	echo -e "${G}[+] Done${N}"
 else
 	echo -e "${R}[-] Failed to clone  SecLists repository !${N}"
 	echo -e "${C}[>] Continuing...${N}"
