@@ -394,8 +394,6 @@ fi
 
 echo -e "${B}[*] Installing SecLists...${N}"
 sudo mkdir /usr/share/wordlists
-vito@debian:~$ 
-
 cd /usr/share/wordlists
 if sudo git clone https://github.com/danielmiessler/SecLists.git > /dev/null 2>&1; then
 	cd
