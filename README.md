@@ -181,7 +181,7 @@ All repositories are cloned into `~/Git`:
      ```bash
      deactivate
      ```
-   - Tools installed via Docker can be run with `docker run ...` commands as shown in the script.
+   - Tools installed via Docker can be run with `sudo docker run ...`.
 
 ## Troubleshooting
 
